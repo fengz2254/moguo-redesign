@@ -17,7 +17,7 @@ export const RecommendedInstitutions: React.FC = () => {
         {INSTITUTIONS.map((inst, idx) => (
           <div 
             key={inst.id} 
-            className="group flex flex-col bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:border-brand-100 transition-all duration-300 relative overflow-hidden"
+            className="group flex flex-col bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:border-brand-100 hover:scale-[1.02] transition-all duration-300 relative overflow-hidden"
           >
             {/* Background Decoration */}
             <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${idx % 2 === 0 ? 'from-brand-50' : 'from-accent-50'} to-transparent rounded-bl-full opacity-60 transition-transform group-hover:scale-110 pointer-events-none`}></div>

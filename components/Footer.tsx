@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mail, Phone, MapPin, Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { Logo } from './Logo';
 
 export const Footer: React.FC = () => {
   return (
@@ -8,14 +9,9 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-brand-500 to-pop-purple rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">
-                M
-              </div>
-              <span className="font-bold text-2xl text-white tracking-tight">蘑菇云课</span>
-            </div>
+            <Logo withText light />
             <p className="text-sm leading-relaxed text-slate-400">
-              蘑菇云课致力于通过技术赋能教育，连接全球优质教育资源，为学习者提供高效、便捷的在线学习体验。
+              魔果云课致力于通过技术赋能教育，连接全球优质教育资源，为学习者提供高效、便捷的在线学习体验。
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-500 hover:text-white transition-all duration-300 hover:-translate-y-1"><Twitter size={18} /></a>
@@ -73,7 +69,7 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
           <p className="flex items-center gap-1">
-            &copy; {new Date().getFullYear()} 蘑菇云课. Made with <Heart size={14} className="text-red-500 fill-red-500" /> in Beijing.
+            &copy; {new Date().getFullYear()} 魔果云课. Made with <Heart size={14} className="text-red-500 fill-red-500" /> in Beijing.
           </p>
           <div className="flex gap-8 mt-4 md:mt-0 font-medium">
             <a href="#" className="hover:text-white transition-colors">隐私政策</a>

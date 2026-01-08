@@ -4,11 +4,14 @@ import { ArrowRight, Sparkles, PlayCircle } from 'lucide-react';
 export const Hero: React.FC = () => {
   return (
     <div className="relative overflow-hidden bg-slate-50">
-      {/* Abstract Background Blobs */}
+      {/* Abstract Background Blobs - Updated colors for Green Theme */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        {/* Blob 1: Light Green */}
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-brand-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 blob-shape"></div>
-        <div className="absolute top-0 -right-20 w-96 h-96 bg-pop-pink/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 blob-shape" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-32 left-20 w-96 h-96 bg-pop-purple/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 blob-shape" style={{ animationDelay: '4s' }}></div>
+        {/* Blob 2: Cyan/Blue (Was Pink) */}
+        <div className="absolute top-0 -right-20 w-96 h-96 bg-pop-cyan/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 blob-shape" style={{ animationDelay: '2s' }}></div>
+        {/* Blob 3: Yellow/Lime (Was Purple) - Adds warmth to green */}
+        <div className="absolute -bottom-32 left-20 w-96 h-96 bg-pop-yellow/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 blob-shape" style={{ animationDelay: '4s' }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto">
@@ -25,13 +28,14 @@ export const Hero: React.FC = () => {
               
               <h1 className="text-5xl tracking-tight font-black text-slate-900 sm:text-6xl md:text-7xl">
                 <span className="block xl:inline">开启您的</span>{' '}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-pop-purple to-pop-pink xl:inline">
+                {/* Updated Gradient: Green -> Cyan -> Lime */}
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-pop-cyan xl:inline">
                   探索之旅
                 </span>
               </h1>
               
               <p className="mt-6 text-lg text-slate-600 sm:mt-8 sm:text-xl sm:max-w-xl sm:mx-auto md:mt-8 md:text-2xl lg:mx-0 leading-relaxed">
-                蘑菇云课，让教与学变得更有趣。
+                魔果云课，让教与学变得更有趣。
                 <br className="hidden md:block"/>
                 连接每一位热爱学习的你，发现无限可能。
               </p>
@@ -40,7 +44,7 @@ export const Hero: React.FC = () => {
                 <div className="rounded-full shadow-glow">
                   <a
                     href="#"
-                    className="w-full flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-full text-white bg-slate-900 hover:bg-slate-800 md:text-xl transition-all hover:scale-105 active:scale-95"
+                    className="w-full flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-full text-white bg-slate-900 hover:bg-brand-600 md:text-xl transition-all hover:scale-105 active:scale-95"
                   >
                     开始学习 <ArrowRight className="ml-2 w-5 h-5" />
                   </a>
@@ -83,7 +87,7 @@ export const Hero: React.FC = () => {
             {/* Floating Card */}
             <div className="absolute bottom-10 left-10 z-20 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 hidden lg:block animate-bounce" style={{ animationDuration: '3s' }}>
                 <div className="flex items-center gap-3">
-                    <div className="bg-green-100 p-2 rounded-full text-green-600">
+                    <div className="bg-brand-100 p-2 rounded-full text-brand-600">
                         <Sparkles size={20} />
                     </div>
                     <div>
