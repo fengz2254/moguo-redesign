@@ -13,46 +13,24 @@ export const Logo: React.FC<LogoProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-2.5 group cursor-pointer select-none">
-      {/* Updated Gradient: From Brand (Green) to Cyan/Teal */}
+      {/* Icon Container - Green Gradient */}
       <div className={`${className} bg-gradient-to-br from-brand-400 via-brand-500 to-pop-cyan rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20 transform transition-transform duration-300 group-hover:rotate-6 group-hover:scale-105`}>
-        {/* Custom Magic Fruit / Swirl Icon */}
+        {/* Magic Fruit Swirl SVG */}
         <svg 
           viewBox="0 0 24 24" 
           fill="none" 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="w-[60%] h-[60%] text-white"
+          stroke="currentColor" 
+          strokeWidth="2.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          className="w-[65%] h-[65%] text-white"
         >
-          {/* Outer Fruit Shape with Swirl */}
-          <path 
-            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            className="opacity-20"
-          />
-          <path 
-            d="M12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18C15.3137 18 18 15.3137 18 12" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          />
-          <path 
-            d="M12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          />
-          {/* Leaf */}
-          <path 
-             d="M16 5C16 5 18 3 20 5C22 7 20 9 20 9"
-             stroke="currentColor"
-             strokeWidth="2"
-             strokeLinecap="round"
-             strokeLinejoin="round"
-          />
+          {/* A stylized fruit/drop shape with a spiral */}
+          <path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 4.03 9 9 0 4.97-4.03 9-9 9z" className="opacity-0" />
+          <path d="M12 21C7.029 21 3 16.97 3 12 3 7.03 7.029 3 12 3c4.97 0 9 4.03 9 9 0 4.97-4.03 9-9 9" />
+          <path d="M12 7v0c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5" />
+          {/* Leaf accent */}
+          <path d="M16.5 7.5c-.5-1.5-2-2.5-3.5-2.5" />
         </svg>
       </div>
       

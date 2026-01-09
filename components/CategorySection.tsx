@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CATEGORIES } from '../constants';
 import { SectionHeader } from './SectionHeader';
-import { CategoryDrawer } from './CategoryDrawer';
-import { Settings2, Plus } from 'lucide-react';
+import { Building2, ArrowRight } from 'lucide-react';
 
 // Define a palette for the categories to rotate through
 const COLOR_PALETTE = [
@@ -17,20 +16,15 @@ const COLOR_PALETTE = [
 ];
 
 export const CategorySection: React.FC = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   return (
     <div>
       <SectionHeader 
         title="热门课程分类" 
         subtitle="探索您感兴趣的领域，开启技能提升之旅"
-        onAction={() => setIsDrawerOpen(true)}
-        actionText="全部分类"
-        actionIcon={<Settings2 size={16} />}
       />
       
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-        {CATEGORIES.map((category, index) => {
+        {CATEGORIES.slice(0, 7).map((category, index) => {
           const Icon = category.icon;
           const colors = COLOR_PALETTE[index % COLOR_PALETTE.length];
           
@@ -43,7 +37,7 @@ export const CategorySection: React.FC = () => {
               <div className={`w-14 h-14 rounded-2xl ${colors.bg} ${colors.text} flex items-center justify-center ${colors.hover} group-hover:text-white transition-all duration-300 mb-4 shadow-sm group-hover:rotate-6`}>
                 <Icon size={26} strokeWidth={2.5} />
               </div>
-              <h3 className="font-bold text-slate-700 group-hover:text-slate-900 text-center text-sm md:text-base">
+              <h3 className="font-bold text-slate-700 group-hover:text-slate-900 text-center text-sm md:text-base whitespace-nowrap">
                 {category.name}
               </h3>
               <span className="text-xs font-semibold text-slate-400 mt-1 bg-slate-50 px-2 py-0.5 rounded-full group-hover:bg-slate-100">
@@ -53,22 +47,25 @@ export const CategorySection: React.FC = () => {
           );
         })}
 
-        {/* Add Button as the last card for quick access */}
-        <button 
-          onClick={() => setIsDrawerOpen(true)}
-          className="group flex flex-col items-center justify-center p-6 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 hover:border-brand-300 hover:bg-brand-50 transition-all duration-300 cursor-pointer h-full"
+        {/* Institution Entry Card - Replaces the last category slot */}
+        <a 
+          href="#join"
+          className="group relative flex flex-col items-center justify-center p-6 bg-slate-900 rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-brand-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden border border-slate-800 hover:border-brand-500/50"
         >
-          <div className="w-12 h-12 rounded-full bg-white text-slate-400 flex items-center justify-center group-hover:text-brand-500 group-hover:scale-110 transition-all duration-300 mb-2 shadow-sm">
-             <Plus size={24} strokeWidth={3} />
+          {/* Decorative background circle */}
+          <div className="absolute top-0 right-0 w-24 h-24 bg-brand-500 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+          
+          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-brand-400 mb-4 shadow-inner ring-1 ring-white/10 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300">
+             <Building2 size={26} strokeWidth={2.5} />
           </div>
-          <h3 className="font-bold text-slate-500 group-hover:text-brand-600 text-sm">
-            自定义分类
+          <h3 className="font-black text-white text-center text-sm md:text-base flex items-center gap-1 group-hover:text-brand-400 transition-colors">
+            机构入驻 <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
           </h3>
-        </button>
+          <span className="text-xs font-medium text-slate-400 mt-1 group-hover:text-brand-200 transition-colors">
+            免费加入平台
+          </span>
+        </a>
       </div>
-
-      {/* The Sidebar Drawer */}
-      <CategoryDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </div>
   );
 };

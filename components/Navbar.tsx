@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, User, LogIn, Sparkles } from 'lucide-react';
+import { Menu, X, Search, User, LogIn, Sparkles, Store } from 'lucide-react';
 import { Logo } from './Logo';
 
 export const Navbar: React.FC = () => {
@@ -17,7 +17,7 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { name: '首页', href: '#' },
     { name: '全部课程', href: '#courses' },
-    { name: '入驻机构', href: '#institutions' },
+    { name: '机构入驻', href: '#institutions', highlight: true },
     { name: '关于我们', href: '#' },
     { name: '帮助中心', href: '#' },
   ];
@@ -39,15 +39,35 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-1 items-center bg-slate-100/50 p-1 rounded-full px-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-slate-600 hover:text-brand-600 hover:bg-white font-medium px-4 py-1.5 rounded-full transition-all duration-200"
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              // @ts-ignore
+              if (link.highlight) {
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="relative flex items-center gap-2 px-4 py-2 rounded-full text-slate-700 font-bold hover:text-brand-600 hover:bg-white transition-all duration-200 group"
+                  >
+                    <span className="p-1 rounded-full bg-brand-100 text-brand-600 group-hover:bg-brand-500 group-hover:text-white transition-colors">
+                        <Store size={14} />
+                    </span>
+                    {link.name}
+                    <span className="absolute top-0 right-0 -mt-1 -mr-2 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm transform scale-90 group-hover:scale-105 transition-transform animate-pulse">
+                      免费
+                    </span>
+                  </a>
+                );
+              }
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-slate-600 hover:text-brand-600 hover:bg-white font-medium px-4 py-1.5 rounded-full transition-all duration-200 flex items-center"
+                >
+                  {link.name}
+                </a>
+              );
+            })}
           </div>
 
           {/* Search Bar (Desktop) */}
@@ -90,9 +110,16 @@ export const Navbar: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="block px-4 py-3 rounded-2xl text-base font-medium text-slate-700 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                className={`block px-4 py-3 rounded-2xl text-base font-medium transition-colors ${
+                    // @ts-ignore
+                    link.highlight 
+                    ? 'text-brand-600 bg-brand-50 font-bold'
+                    : 'text-slate-700 hover:text-brand-600 hover:bg-brand-50'
+                }`}
                 onClick={() => setIsOpen(false)}
               >
+                {/* @ts-ignore */}
+                {link.highlight && <span className="inline-block mr-2 text-xs bg-rose-500 text-white px-1.5 rounded">免费</span>}
                 {link.name}
               </a>
             ))}
@@ -100,7 +127,7 @@ export const Navbar: React.FC = () => {
               <button className="w-full text-center py-3 border-2 border-slate-200 rounded-xl text-slate-600 font-bold">
                 登录
               </button>
-              <button className="w-full text-center py-3 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-200">
+              <button className="w-full text-center py-3 bg-slate-900 text-white rounded-xl font-bold shadow-lg">
                 立即注册
               </button>
             </div>
