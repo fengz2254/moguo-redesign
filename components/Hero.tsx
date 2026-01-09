@@ -1,153 +1,145 @@
-import React from 'react';
-import { ArrowRight, Sparkles, PlayCircle, MessageCircle, Heart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
+import { ALL_CATEGORY_GROUPS, RECOMMENDED_COURSES } from '../constants';
 
 export const Hero: React.FC = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  // Use first 4 courses as banner slides
+  const slides = RECOMMENDED_COURSES.slice(0, 4);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+
   return (
-    <div className="relative overflow-hidden bg-slate-50 selection:bg-brand-200">
-      {/* Abstract Background Blobs */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-20 w-[40rem] h-[40rem] bg-brand-200/40 rounded-full mix-blend-multiply filter blur-[64px] opacity-70 animate-pulse" style={{ animationDuration: '8s' }}></div>
-        <div className="absolute top-20 right-0 w-[30rem] h-[30rem] bg-cyan-200/40 rounded-full mix-blend-multiply filter blur-[64px] opacity-60 blob-shape" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-32 left-1/3 w-[35rem] h-[35rem] bg-yellow-200/40 rounded-full mix-blend-multiply filter blur-[64px] opacity-60 blob-shape" style={{ animationDelay: '4s' }}></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto">
-        <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 pt-10 px-4 sm:px-6 lg:px-8">
-          <main className="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
-            <div className="sm:text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-brand-100 text-brand-700 text-xs font-bold uppercase tracking-wide shadow-sm mb-8 hover:shadow-md transition-shadow cursor-default">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-500"></span>
-                </span>
-                MOOC 2.0 在线教育平台
-              </div>
-              
-              <h1 className="text-5xl tracking-tight font-black text-slate-900 sm:text-6xl md:text-7xl leading-[1.1]">
-                <span className="block xl:inline">开启您的</span>{' '}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-400 xl:inline">
-                  探索之旅
-                </span>
-              </h1>
-              
-              <p className="mt-6 text-lg text-slate-600 sm:mt-8 sm:text-xl sm:max-w-xl sm:mx-auto md:mt-8 md:text-xl lg:mx-0 leading-relaxed font-medium">
-                汇聚行业顶尖名师，打造沉浸式互动课堂。
-                <br className="hidden md:block"/>
-                无论是职场进阶还是兴趣培养，魔果云课都能助您一臂之力。
-              </p>
-              
-              <div className="mt-8 sm:mt-12 sm:flex sm:justify-center lg:justify-start gap-4">
-                <div className="rounded-full shadow-lg shadow-brand-500/25">
-                  <a
-                    href="#courses"
-                    className="w-full flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-full text-white bg-slate-900 hover:bg-brand-600 md:text-xl transition-all hover:-translate-y-1 active:scale-95 duration-300"
-                  >
-                    开始学习 <ArrowRight className="ml-2 w-5 h-5" />
-                  </a>
-                </div>
-                <div className="mt-3 sm:mt-0 sm:ml-3">
-                  <a
-                    href="#"
-                    className="group w-full flex items-center justify-center px-8 py-4 text-lg font-bold rounded-full text-slate-700 bg-white border border-slate-200 hover:border-brand-300 hover:bg-brand-50/50 md:text-xl transition-all hover:-translate-y-1 active:scale-95 duration-300"
-                  >
-                    <PlayCircle className="mr-2 w-6 h-6 text-brand-500 group-hover:scale-110 transition-transform" />
-                    观看演示
-                  </a>
-                </div>
-              </div>
-              
-              <div className="mt-10 flex items-center gap-6 text-sm font-semibold text-slate-500 sm:justify-center lg:justify-start">
-                 <div className="flex -space-x-3">
-                    {[1,2,3,4].map((i) => (
-                         <div key={i} className="w-10 h-10 rounded-full ring-2 ring-white overflow-hidden shadow-sm">
-                            <img className="w-full h-full object-cover" src={`https://picsum.photos/seed/user${i}/100`} alt=""/>
-                         </div>
-                    ))}
-                 </div>
-                 <div className="flex flex-col">
-                    <div className="flex items-center gap-1 text-yellow-500">
-                        {[1,2,3,4,5].map(s => <span key={s} className="text-xs">★</span>)}
+    <div className="pt-6 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex gap-4 lg:h-[420px]">
+          
+          {/* Left Sidebar - Categories (Desktop Only) */}
+          <div className="hidden lg:flex flex-col w-60 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-visible py-3 shrink-0 relative z-20">
+             {ALL_CATEGORY_GROUPS.map((group, idx) => (
+                <div key={idx} className="group/item px-5 py-3 hover:bg-slate-50 cursor-pointer flex items-center justify-between transition-colors relative">
+                    <div className="flex flex-col">
+                        <span className="font-bold text-slate-700 text-sm group-hover/item:text-brand-600 transition-colors">{group.title}</span>
+                        <span className="text-[10px] text-slate-400 truncate max-w-[150px] mt-0.5">
+                            {group.items.slice(0, 2).join(' / ')}
+                        </span>
                     </div>
-                    <p>超过 <span className="text-slate-900 font-bold">10,000+</span> 学员已加入</p>
-                 </div>
-              </div>
+                    <ChevronRight size={14} className="text-slate-300 group-hover/item:text-brand-500" />
+                    
+                    {/* Hover Sub-menu */}
+                    <div className="absolute left-[calc(100%+0.5rem)] top-0 min-h-full w-[600px] bg-white rounded-2xl shadow-xl border border-slate-100 p-6 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-200 flex flex-col flex-wrap content-start gap-x-8 gap-y-2 z-50">
+                        {/* Little triangle connector */}
+                        <div className="absolute top-6 -left-2 w-4 h-4 bg-white transform rotate-45 border-l border-b border-slate-100"></div>
+                        
+                        <h4 className="w-full text-lg font-black text-slate-800 mb-4 pb-2 border-b border-slate-50 flex items-center gap-2">
+                            {group.title}
+                            <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">全部课程</span>
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                            {group.items.map((item) => (
+                                <a key={item} href="#" className="text-sm text-slate-600 hover:text-brand-500 hover:font-bold py-1.5 px-3 rounded-lg hover:bg-brand-50 transition-colors">
+                                    {item}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+             ))}
+             <div className="mt-auto px-5 pt-2 border-t border-slate-50">
+                <a href="#categories" className="text-xs font-bold text-slate-400 hover:text-brand-500 flex items-center gap-1 transition-colors">
+                    查看全部分类 <ArrowRight size={10} />
+                </a>
+             </div>
+          </div>
 
-            </div>
-          </main>
+          {/* Right Banner Carousel */}
+          <div className="flex-1 relative rounded-2xl overflow-hidden shadow-md group border border-slate-100 bg-slate-900 z-10">
+             {slides.map((slide, index) => (
+                <div 
+                    key={slide.id}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                        index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                    }`}
+                >
+                    <img 
+                        src={slide.coverImage} 
+                        alt={slide.title} 
+                        className="w-full h-full object-cover opacity-60 transform scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90"></div>
+                    
+                    {/* Content Overlay */}
+                    <div className="absolute bottom-0 left-0 p-8 sm:p-12 md:p-16 max-w-3xl animate-fade-up">
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="inline-block px-3 py-1 bg-brand-500 text-white text-xs font-bold rounded-full shadow-lg shadow-brand-500/30">
+                                今日推荐
+                            </span>
+                            <span className="text-brand-300 text-xs font-bold tracking-wider uppercase">
+                                FEATURED COURSE
+                            </span>
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-4 drop-shadow-lg tracking-tight">
+                            {slide.title}
+                        </h2>
+                        <p className="text-slate-200 text-lg mb-8 line-clamp-2 max-w-xl font-medium drop-shadow-md">
+                            由 {slide.institution} 倾力打造 · {slide.instructor} 导师主讲
+                        </p>
+                        <button className="bg-white text-slate-900 hover:bg-brand-400 hover:text-white px-8 py-3.5 rounded-full font-bold text-base transition-all transform hover:scale-105 shadow-xl flex items-center gap-2">
+                            立即学习 <ArrowRight size={18} />
+                        </button>
+                    </div>
+                </div>
+             ))}
+
+             {/* Indicators */}
+             <div className="absolute bottom-6 right-8 z-20 flex gap-2">
+                {slides.map((_, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => setCurrentSlide(idx)}
+                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                            idx === currentSlide ? 'bg-brand-500 w-8' : 'bg-white/30 hover:bg-white/60'
+                        }`}
+                    />
+                ))}
+             </div>
+
+             {/* Arrows */}
+             <button 
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/20 hover:bg-brand-500 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 border border-white/10"
+             >
+                <ChevronLeft size={24} />
+             </button>
+             <button 
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/20 hover:bg-brand-500 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 border border-white/10"
+             >
+                <ChevronRight size={24} />
+             </button>
+          </div>
+
         </div>
       </div>
       
-      {/* Decorative Image Container - Right Side */}
-      <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-[45%] lg:h-full hidden lg:flex items-center justify-center pr-8 pointer-events-none">
-        <div className="relative w-full max-w-lg aspect-square">
-            
-            {/* Main "App Window" */}
-            <div className="absolute inset-0 bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 transform rotate-[-3deg] transition-transform hover:rotate-0 duration-700 ease-out z-10">
-                 {/* Window Header */}
-                 <div className="h-8 bg-slate-50 border-b border-slate-100 flex items-center gap-2 px-4">
-                    <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-400/80"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-400/80"></div>
-                 </div>
-                 {/* Video Area */}
-                 <div className="relative h-[65%] bg-slate-900 overflow-hidden group">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" className="w-full h-full object-cover opacity-90" alt="Class" />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
-                         <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40 shadow-lg">
-                            <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1"></div>
-                         </div>
-                    </div>
-                    {/* Live Badge */}
-                    <div className="absolute top-4 left-4 bg-red-500/90 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span> LIVE
-                    </div>
-                 </div>
-                 {/* Chat Area Mockup */}
-                 <div className="p-4 space-y-3 bg-white">
-                    <div className="flex gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 shrink-0"></div>
-                        <div className="space-y-1 w-full">
-                            <div className="h-2 w-20 bg-slate-100 rounded"></div>
-                            <div className="h-2 w-3/4 bg-slate-50 rounded"></div>
-                        </div>
-                    </div>
-                    <div className="flex gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 shrink-0"></div>
-                        <div className="space-y-1 w-full">
-                            <div className="h-2 w-16 bg-slate-100 rounded"></div>
-                            <div className="h-2 w-full bg-slate-50 rounded"></div>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-
-            {/* Floating Elements */}
-            <div className="absolute -right-8 top-20 bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-white z-20 animate-bounce" style={{ animationDuration: '4s' }}>
-                <div className="flex items-center gap-3">
-                    <div className="bg-green-100 p-2.5 rounded-xl text-green-600">
-                        <MessageCircle size={20} fill="currentColor" className="text-green-500/20 stroke-green-600" />
-                    </div>
-                    <div>
-                        <p className="text-xs text-slate-400 font-semibold uppercase">Student feedback</p>
-                        <p className="text-sm font-bold text-slate-800">"课程非常有帮助！"</p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="absolute -left-12 bottom-32 bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-white z-20 animate-bounce" style={{ animationDuration: '5s' }}>
-                <div className="flex items-center gap-3">
-                    <div className="bg-rose-100 p-2.5 rounded-xl text-rose-500">
-                        <Heart size={20} fill="currentColor" />
-                    </div>
-                    <div>
-                        <p className="text-xs text-slate-400 font-semibold uppercase">Daily Likes</p>
-                        <p className="text-sm font-bold text-slate-800">1,240+</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-      </div>
+      {/* Inline styles for animations */}
+      <style>{`
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fade-up 0.8s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };

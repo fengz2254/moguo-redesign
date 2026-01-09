@@ -6,19 +6,26 @@ import {
   Music, 
   Camera, 
   Cpu, 
-  BookOpen 
+  BookOpen,
+  Pencil,
+  GraduationCap,
+  Landmark,
+  Code2,
+  Briefcase,
+  TrendingUp,
+  MessageCircle
 } from 'lucide-react';
-import { Category, Course, Institution, CategoryGroup } from './types';
+import { Category, Course, Institution, CategoryGroup, Gift } from './types';
 
 export const CATEGORIES: Category[] = [
-  { id: '1', name: '编程开发', icon: Code, count: 120 },
-  { id: '2', name: '艺术设计', icon: Palette, count: 85 },
-  { id: '3', name: '外语学习', icon: Globe, count: 240 },
-  { id: '4', name: '职场技能', icon: BarChart3, count: 150 },
-  { id: '5', name: '音乐乐器', icon: Music, count: 64 },
-  { id: '6', name: '摄影影视', icon: Camera, count: 42 },
-  { id: '7', name: '人工智能', icon: Cpu, count: 30 },
-  { id: '8', name: 'K12教育', icon: BookOpen, count: 500 },
+  { id: '1', name: '公考', icon: Pencil, count: 520 },
+  { id: '2', name: '教资教招', icon: GraduationCap, count: 340 },
+  { id: '3', name: '考研', icon: BookOpen, count: 210 },
+  { id: '4', name: '财会金融', icon: Landmark, count: 180 },
+  { id: '5', name: '设计制作', icon: Palette, count: 150 },
+  { id: '6', name: 'IT互联网', icon: Code2, count: 430 },
+  { id: '7', name: '求职面试', icon: Briefcase, count: 90 },
+  { id: '8', name: '个人提升', icon: TrendingUp, count: 120 },
 ];
 
 export const INITIAL_MY_CATEGORIES = [
@@ -211,4 +218,37 @@ export const INSTITUTIONS: Institution[] = [
         price: 599
     }
   },
+];
+
+export const SIDEBAR_GIFTS: Gift[] = [
+  {
+    id: 'g1',
+    type: 'coupon',
+    value: '100',
+    unit: '¥',
+    label: '新人券',
+    condition: '满 500 可用',
+    color: 'rose',
+    action: '领'
+  },
+  {
+    id: 'g2',
+    type: 'discount',
+    value: '8.5',
+    unit: '折',
+    label: '课程通用',
+    condition: '最高抵 200',
+    color: 'orange',
+    action: '抢'
+  },
+  {
+    id: 'g3',
+    type: 'material',
+    value: '免费',
+    unit: '',
+    label: '独家资料',
+    condition: 'React 面试宝典',
+    color: 'blue',
+    action: '下'
+  }
 ];

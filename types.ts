@@ -39,3 +39,14 @@ export interface Institution {
     price: number;
   };
 }
+
+export interface Gift {
+  id: string;
+  type: 'coupon' | 'material' | 'discount';
+  value: string;
+  unit: string;
+  label: string;
+  condition: string;
+  color: 'rose' | 'blue' | 'orange';
+  action: string;
+}

@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, User, LogIn, Sparkles, Store } from 'lucide-react';
+import { Menu, X, Search, User, LogIn, Sparkles, Store, LogOut } from 'lucide-react';
 import { Logo } from './Logo';
+import { LoginModal } from './LoginModal';
+import { useAuth } from '../context/AuthContext';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onNavigate: (view: 'home' | 'learning-center') => void;
+  currentView: 'home' | 'learning-center' | 'search-results';
+  onSearch: (query: string) => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearch }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Search State
+  const [searchValue, setSearchValue] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>(['公考', '机械', '小', '3月5日测试']);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,14 +31,58 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: '首页', href: '#' },
-    { name: '全部课程', href: '#courses' },
-    { name: '机构入驻', href: '#institutions', highlight: true },
-    { name: '关于我们', href: '#' },
-    { name: '帮助中心', href: '#' },
+    { name: '首页', href: '#', view: 'home' },
+    { name: '学习中心', href: '#learning-center', view: 'learning-center' },
+    { name: '机构入驻', href: '#institutions', highlight: true, view: 'home' },
+    { name: '下载中心', href: '#download', view: 'home' },
+    { name: '帮助中心', href: '#', view: 'home' },
   ];
 
+  const handleNavClick = (e: React.MouseEvent, linkName: string, view: string) => {
+    e.preventDefault();
+    
+    if (linkName === '学习中心') {
+      if (!isAuthenticated) {
+        setIsLoginOpen(true);
+        return;
+      }
+      onNavigate('learning-center');
+    } else {
+      onNavigate('home');
+      // Simple hash navigation for home sections
+      const element = document.getElementById(view === 'home' && linkName !== '首页' ? linkName : ''); // This is a simplified logic, ideally use href
+    }
+  };
+
+  const handleSearchSubmit = (e?: React.KeyboardEvent) => {
+      if (e && e.key !== 'Enter') return;
+      if (!searchValue.trim()) return;
+      
+      onSearch(searchValue);
+      setIsSearchFocused(false);
+      // Add to history if unique
+      if (!searchHistory.includes(searchValue)) {
+          setSearchHistory(prev => [searchValue, ...prev].slice(0, 8));
+      }
+  };
+
+  const handleSearchHistoryClick = (item: string) => {
+      setSearchValue(item);
+      onSearch(item);
+      setIsSearchFocused(false);
+  };
+
+  const removeHistoryItem = (e: React.MouseEvent, itemToRemove: string) => {
+      e.stopPropagation(); // Prevent triggering the row click
+      setSearchHistory(prev => prev.filter(item => item !== itemToRemove));
+  };
+
+  const clearHistory = () => {
+      setSearchHistory([]);
+  };
+
   return (
+    <>
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
@@ -33,19 +93,22 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0" onClick={() => onNavigate('home')}>
             <Logo withText />
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-1 items-center bg-slate-100/50 p-1 rounded-full px-4">
             {navLinks.map((link) => {
+              const isActive = (link.name === '学习中心' && currentView === 'learning-center') || (link.name === '首页' && currentView === 'home');
+              
               // @ts-ignore
               if (link.highlight) {
                 return (
                   <a
                     key={link.name}
                     href={link.href}
+                    onClick={() => onNavigate('home')}
                     className="relative flex items-center gap-2 px-4 py-2 rounded-full text-slate-700 font-bold hover:text-brand-600 hover:bg-white transition-all duration-200 group"
                   >
                     <span className="p-1 rounded-full bg-brand-100 text-brand-600 group-hover:bg-brand-500 group-hover:text-white transition-colors">
@@ -62,7 +125,11 @@ export const Navbar: React.FC = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-slate-600 hover:text-brand-600 hover:bg-white font-medium px-4 py-1.5 rounded-full transition-all duration-200 flex items-center"
+                  onClick={(e) => handleNavClick(e, link.name, link.view)}
+                  className={`
+                    font-medium px-4 py-1.5 rounded-full transition-all duration-200 flex items-center
+                    ${isActive ? 'text-brand-600 bg-white shadow-sm' : 'text-slate-600 hover:text-brand-600 hover:bg-white'}
+                  `}
                 >
                   {link.name}
                 </a>
@@ -70,24 +137,126 @@ export const Navbar: React.FC = () => {
             })}
           </div>
 
-          {/* Search Bar (Desktop) */}
-          <div className="hidden lg:flex flex-1 max-w-xs ml-4 relative group">
-            <input
-              type="text"
-              placeholder="搜索课程..."
-              className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-slate-100 bg-white focus:border-brand-400 focus:ring-4 focus:ring-brand-100 outline-none transition-all text-sm group-hover:border-slate-200"
-            />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 group-hover:text-brand-500 transition-colors" />
+          {/* Search Bar (Desktop) - REDESIGNED */}
+          <div className="hidden lg:block flex-1 max-w-xs ml-4 relative">
+            <div className="relative group">
+                <input
+                  type="text"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyDown={handleSearchSubmit}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                  placeholder="请输入课程名称"
+                  className={`
+                    w-full pl-4 pr-10 py-2 rounded-lg border-2 outline-none transition-all text-sm
+                    ${isSearchFocused 
+                        ? 'border-brand-400 bg-white shadow-sm' 
+                        : 'border-slate-100 bg-slate-50 focus:bg-white focus:border-brand-400'
+                    }
+                  `}
+                />
+                <Search 
+                    className={`w-4 h-4 absolute right-3 top-3 cursor-pointer transition-colors ${isSearchFocused ? 'text-brand-500' : 'text-slate-400'}`} 
+                    onClick={() => handleSearchSubmit()}
+                />
+            </div>
+
+            {/* Search History Dropdown */}
+            {isSearchFocused && (
+                <div 
+                    className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-slate-100 p-4 z-50 animate-fade-in origin-top"
+                    onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking inside dropdown
+                >
+                    <div className="flex justify-between items-center mb-3 text-xs text-slate-400 px-1">
+                        <span>搜索历史</span>
+                        {searchHistory.length > 0 && (
+                            <button 
+                                onClick={clearHistory}
+                                className="hover:text-slate-600 transition-colors"
+                            >
+                                清空
+                            </button>
+                        )}
+                    </div>
+                    
+                    {searchHistory.length > 0 ? (
+                        <div className="space-y-2">
+                            {searchHistory.map((item) => (
+                                <div 
+                                    key={item}
+                                    className="flex items-center justify-between bg-slate-50 hover:bg-slate-100 rounded-lg px-3 py-2 cursor-pointer group/item transition-colors"
+                                    onClick={() => handleSearchHistoryClick(item)}
+                                >
+                                    <span className="text-sm text-slate-600">{item}</span>
+                                    <button 
+                                        onClick={(e) => removeHistoryItem(e, item)}
+                                        className="text-slate-300 hover:text-slate-500 p-1 opacity-0 group-hover/item:opacity-100 transition-opacity"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-4 text-xs text-slate-300">
+                            暂无搜索历史
+                        </div>
+                    )}
+                </div>
+            )}
           </div>
 
           {/* User Actions (Desktop) */}
           <div className="hidden md:flex items-center space-x-3 ml-4">
-            <button className="text-slate-600 hover:text-brand-600 font-bold text-sm">
-              登录
-            </button>
-            <button className="bg-slate-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2">
-              免费注册 <Sparkles className="w-3 h-3 text-accent-400" />
-            </button>
+            {isAuthenticated ? (
+                <div className="relative">
+                    <button 
+                        onClick={() => setShowUserMenu(!showUserMenu)}
+                        className="flex items-center gap-2 pl-1 pr-3 py-1 bg-white border border-slate-200 rounded-full hover:shadow-md transition-shadow"
+                    >
+                        <div className="w-8 h-8 rounded-full bg-brand-100 overflow-hidden border border-brand-200">
+                             <img src={user?.avatar} alt="User" />
+                        </div>
+                        <span className="text-sm font-bold text-slate-700 max-w-[80px] truncate">{user?.username}</span>
+                    </button>
+
+                    {showUserMenu && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 animate-scale-in origin-top-right">
+                             <div className="px-4 py-2 border-b border-slate-50 mb-1">
+                                 <p className="text-xs text-slate-400">已登录账号</p>
+                                 <p className="font-bold text-slate-800 truncate">{user?.username}</p>
+                             </div>
+                             <button onClick={() => { onNavigate('learning-center'); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-600 font-medium">
+                                 我的学习
+                             </button>
+                             <button className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-600 font-medium">
+                                 账号设置
+                             </button>
+                             <div className="border-t border-slate-50 mt-1 pt-1">
+                                <button onClick={() => { logout(); setShowUserMenu(false); onNavigate('home'); }} className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-rose-50 font-medium flex items-center gap-2">
+                                    <LogOut size={14} /> 退出登录
+                                </button>
+                             </div>
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <>
+                    <button 
+                    onClick={() => setIsLoginOpen(true)}
+                    className="text-slate-600 hover:text-brand-600 font-bold text-sm"
+                    >
+                    登录
+                    </button>
+                    <button 
+                    onClick={() => setIsLoginOpen(true)}
+                    className="bg-slate-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                    >
+                    免费注册 <Sparkles className="w-3 h-3 text-accent-400" />
+                    </button>
+                </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -116,24 +285,60 @@ export const Navbar: React.FC = () => {
                     ? 'text-brand-600 bg-brand-50 font-bold'
                     : 'text-slate-700 hover:text-brand-600 hover:bg-brand-50'
                 }`}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => {
+                    setIsOpen(false);
+                    // @ts-ignore
+                    handleNavClick(e, link.name, link.view);
+                }}
               >
                 {/* @ts-ignore */}
                 {link.highlight && <span className="inline-block mr-2 text-xs bg-rose-500 text-white px-1.5 rounded">免费</span>}
                 {link.name}
               </a>
             ))}
-            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col space-y-3">
-              <button className="w-full text-center py-3 border-2 border-slate-200 rounded-xl text-slate-600 font-bold">
-                登录
-              </button>
-              <button className="w-full text-center py-3 bg-slate-900 text-white rounded-xl font-bold shadow-lg">
-                立即注册
-              </button>
-            </div>
+            
+            {!isAuthenticated && (
+                <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col space-y-3">
+                <button 
+                    onClick={() => {
+                    setIsOpen(false);
+                    setIsLoginOpen(true);
+                    }}
+                    className="w-full text-center py-3 border-2 border-slate-200 rounded-xl text-slate-600 font-bold"
+                >
+                    登录
+                </button>
+                <button 
+                    onClick={() => {
+                        setIsOpen(false);
+                        setIsLoginOpen(true);
+                    }}
+                    className="w-full text-center py-3 bg-slate-900 text-white rounded-xl font-bold shadow-lg"
+                >
+                    立即注册
+                </button>
+                </div>
+            )}
+            
+            {isAuthenticated && (
+                 <button 
+                 onClick={() => {
+                     logout();
+                     setIsOpen(false);
+                     onNavigate('home');
+                 }}
+                 className="w-full text-center py-3 bg-slate-100 text-slate-600 rounded-xl font-bold mt-4"
+             >
+                 退出登录
+             </button>
+            )}
           </div>
         </div>
       )}
     </header>
+
+    {/* Login Modal */}
+    <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onSuccess={() => onNavigate('learning-center')} />
+    </>
   );
 };
