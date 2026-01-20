@@ -1,11 +1,6 @@
+
 import { 
-  Code, 
   Palette, 
-  Globe, 
-  BarChart3, 
-  Music, 
-  Camera, 
-  Cpu, 
   BookOpen,
   Pencil,
   GraduationCap,
@@ -13,7 +8,6 @@ import {
   Code2,
   Briefcase,
   TrendingUp,
-  MessageCircle
 } from 'lucide-react';
 import { Category, Course, Institution, CategoryGroup, Gift } from './types';
 
@@ -40,11 +34,11 @@ export const ALL_CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     title: '出国留学',
-    items: ['留学服务', '托福', '雅思', 'GRE', 'GMAT', '作品集', '其他留学']
+    items: ['留学考试', '留学服务', '托福', '雅思', 'GRE', 'GMAT', '作品集', '其他留学']
   },
   {
     title: '考试考证',
-    items: ['教资教招', '法律考试', '财会金融', '医疗健康', '建筑工程', '其他考证', '公务员考试', '考研']
+    items: ['考研', '公务员考试', '教资教招', '法律考试', '财会金融', '医疗健康', '建筑工程', '其他考证']
   },
   {
     title: '职场发展',
@@ -52,11 +46,11 @@ export const ALL_CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     title: '文化艺术',
-    items: ['音乐', '舞蹈', '声乐/表演', '文学国学', '绘画', '书法', '其他文化艺术']
+    items: ['音乐', '舞蹈', '声乐/表演', '文学国学', '绘画', '书法', '摄影修图', '其他文化艺术']
   },
   {
     title: '兴趣生活',
-    items: ['手工', '情感', '形象', '健康养生', '美食烹饪', '萌宠', '其他兴趣生活', '摄影修图']
+    items: ['手工', '情感', '形象', '健康养生', '美食烹饪', '萌宠', '其他兴趣生活']
   },
   {
     title: '素质教育',
@@ -64,7 +58,63 @@ export const ALL_CATEGORY_GROUPS: CategoryGroup[] = [
   }
 ];
 
+// Mock long description images
+const MOCK_DESC_IMAGES = [
+    'https://picsum.photos/seed/desc1/800/1000',
+    'https://picsum.photos/seed/desc2/800/800',
+    'https://picsum.photos/seed/desc3/800/1200',
+];
+
+const MOCK_SYLLABUS = [
+    {
+        chapter: '第一章：基础入门',
+        items: [
+            { title: '课程导学与环境搭建', duration: '15:20', isFree: true },
+            { title: '核心概念解析', duration: '20:05', isFree: true },
+            { title: '第一次实战练习', duration: '45:00', isFree: false },
+        ]
+    },
+    {
+        chapter: '第二章：进阶技巧',
+        items: [
+            { title: '高级工具使用详解', duration: '30:10', isFree: false },
+            { title: '案例分析：商业项目复盘', duration: '55:00', isFree: false },
+        ]
+    }
+];
+
 export const RECOMMENDED_COURSES: Course[] = [
+  {
+    id: 'banner-1',
+    title: 'SU建模渲染系统课：零基础掌握商业出图',
+    coverImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2831&auto=format&fit=crop', 
+    instructor: 'House',
+    institution: 'House是个设计师',
+    price: 399,
+    originalPrice: 699,
+    rating: 5.0,
+    studentCount: 1205,
+    tags: ['SketchUp', 'Enscape', 'D5渲染'],
+    hideTextOverlay: true,
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS,
+    features: ['提供配套素材', '支持回放', '答疑服务']
+  },
+  {
+    id: 'banner-2',
+    title: '2026景观岛学期软件陪跑营',
+    coverImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2940&auto=format&fit=crop', 
+    instructor: '景观岛导师团',
+    institution: '景观岛',
+    price: 1298,
+    rating: 4.9,
+    studentCount: 560,
+    tags: ['Ps/Ai/CAD', '13节实战课', '全程陪跑'],
+    hideTextOverlay: true,
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS,
+    features: ['1对1作业批改', '就业指导']
+  },
   {
     id: '101',
     title: 'React 18 全栈开发实战课程：从入门到精通',
@@ -75,7 +125,10 @@ export const RECOMMENDED_COURSES: Course[] = [
     originalPrice: 499,
     rating: 4.9,
     studentCount: 3420,
-    tags: ['直播课', '就业班']
+    tags: ['直播课', '就业班'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS,
+    features: ['源码下载', '电子证书']
   },
   {
     id: '102',
@@ -87,7 +140,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     originalPrice: 699,
     rating: 4.8,
     studentCount: 1250,
-    tags: ['名师指导']
+    tags: ['名师指导'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   },
   {
     id: '103',
@@ -98,7 +153,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     price: 0,
     rating: 4.7,
     studentCount: 8900,
-    tags: ['免费公开课']
+    tags: ['免费公开课'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   },
   {
     id: '104',
@@ -110,7 +167,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     originalPrice: 199,
     rating: 4.6,
     studentCount: 5600,
-    tags: ['热门']
+    tags: ['热门'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   },
   {
     id: '105',
@@ -122,7 +181,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     originalPrice: 399,
     rating: 4.8,
     studentCount: 2100,
-    tags: ['实战']
+    tags: ['实战'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   },
   {
     id: '106',
@@ -134,7 +195,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     originalPrice: 1299,
     rating: 4.9,
     studentCount: 890,
-    tags: ['考证']
+    tags: ['考证'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   },
   {
     id: '107',
@@ -145,7 +208,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     price: 299,
     rating: 4.9,
     studentCount: 4500,
-    tags: ['亲子']
+    tags: ['亲子'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   },
   {
     id: '108',
@@ -157,7 +222,9 @@ export const RECOMMENDED_COURSES: Course[] = [
     originalPrice: 599,
     rating: 4.7,
     studentCount: 1800,
-    tags: ['进阶']
+    tags: ['进阶'],
+    descriptionImages: MOCK_DESC_IMAGES,
+    syllabus: MOCK_SYLLABUS
   }
 ];
 

@@ -1,15 +1,20 @@
-import { LucideIcon } from 'lucide-react';
 
 export interface Category {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon: any; // Vue component definition
   count: number;
 }
 
 export interface CategoryGroup {
   title: string;
   items: string[];
+}
+
+export interface SyllabusItem {
+  title: string;
+  duration: string;
+  isFree?: boolean;
 }
 
 export interface Course {
@@ -23,6 +28,15 @@ export interface Course {
   rating: number;
   studentCount: number;
   tags: string[];
+  hideTextOverlay?: boolean;
+  overlayColor?: string;
+  // New fields for detail page
+  descriptionImages?: string[]; 
+  syllabus?: {
+    chapter: string;
+    items: SyllabusItem[];
+  }[];
+  features?: string[];
 }
 
 export interface Institution {

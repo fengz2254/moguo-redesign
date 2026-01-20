@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
@@ -16,29 +17,29 @@
             },
             colors: {
               brand: {
-                50: '#ecfdf5', // Mint 50
-                100: '#d1fae5', // Mint 100
-                200: '#a7f3d0', // Mint 200
-                300: '#6ee7b7', // Mint 300
-                400: '#34d399', // Mint 400
-                500: '#10b981', // Emerald 500 (Primary)
-                600: '#059669', // Emerald 600
-                700: '#047857', // Emerald 700
-                900: '#064e3b', // Emerald 900
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                200: '#a7f3d0',
+                300: '#6ee7b7',
+                400: '#34d399',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+                900: '#064e3b',
               },
               accent: {
                 50: '#fff7ed',
                 100: '#ffedd5',
-                400: '#fb923c', // Orange 400
-                500: '#f97316', // Orange 500
-                600: '#ea580c', // Orange 600
+                400: '#fb923c',
+                500: '#f97316',
+                600: '#ea580c',
               },
               pop: {
                 pink: '#f472b6',
                 purple: '#a78bfa',
-                yellow: '#facc15', // Lemon
-                green: '#4ade80', // Lime
-                cyan: '#22d3ee',  // Cyan
+                yellow: '#facc15',
+                green: '#4ade80',
+                cyan: '#22d3ee',
               }
             },
             borderRadius: {
@@ -47,7 +48,7 @@
             },
             boxShadow: {
               'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
-              'glow': '0 0 20px rgba(16, 185, 129, 0.4)', // Updated glow to green
+              'glow': '0 0 20px rgba(16, 185, 129, 0.4)',
             }
           },
         },
@@ -68,18 +69,20 @@
         100% { transform: translate(0px, 0px) scale(1); }
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "vue": "https://esm.sh/vue@^3.5.26",
+    "lucide-vue": "https://esm.sh/lucide-vue@^0.517.0"
   }
 }
 </script>
 </head>
-  <body class="bg-slate-50 text-slate-800">
+  <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

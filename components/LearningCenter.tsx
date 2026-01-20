@@ -1,323 +1,371 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ChevronLeft, ChevronRight, PlayCircle, Search, Calendar as CalendarIcon } from 'lucide-react';
+import { 
+    Play, Calendar as CalendarIcon, Clock, MoreVertical, 
+    CheckCircle2, ChevronRight, ChevronLeft, Flame, Target, BookOpen,
+    Video, Trophy
+} from 'lucide-react';
 
 // --- Mock Data ---
 
-const COURSES_LIST = [
+const MY_COURSES = [
   {
     id: 1,
-    title: '韵儿老师的绘画课',
-    image: 'https://picsum.photos/seed/art1/600/400',
-    lessons: 0,
-    validity: '永久有效',
-    showReview: false
+    title: '2024 公务员省考笔试系统班',
+    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=600&auto=format&fit=crop',
+    progress: 35,
+    totalLessons: 120,
+    learnedLessons: 42,
+    lastLearnTime: '10分钟前',
+    nextLesson: '言语理解与表达 - 逻辑填空实战',
+    status: 'learning'
   },
   {
     id: 2,
-    title: 'SaaS晨会-新版直播间晨会',
-    image: 'https://picsum.photos/seed/owl/600/400',
-    lessons: 191,
-    validity: '至2027年09月18日',
-    showReview: true
+    title: '零基础直达雅思 7.0 分全程班',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop',
+    progress: 12,
+    totalLessons: 80,
+    learnedLessons: 10,
+    lastLearnTime: '2天前',
+    nextLesson: 'Listening - Section 2 场景词汇',
+    status: 'learning'
   },
   {
     id: 3,
-    title: 'SAAS晨会-新直播间',
-    image: 'https://picsum.photos/seed/cartoon/600/400',
-    lessons: 47,
-    validity: '至2026年08月21日',
-    showReview: false
+    title: 'Python 数据分析实战营',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop',
+    progress: 100,
+    totalLessons: 45,
+    learnedLessons: 45,
+    lastLearnTime: '1个月前',
+    nextLesson: '已结课',
+    status: 'completed'
   },
   {
     id: 4,
-    title: '质心学院',
-    image: 'https://picsum.photos/seed/robot/600/400',
-    lessons: 34,
-    validity: '永久有效',
-    showReview: true
-  },
-  {
-    id: 5,
-    title: '测试课程',
-    image: 'https://picsum.photos/seed/robot2/600/400',
-    lessons: 18,
-    validity: '永久有效',
-    showReview: true
-  },
-  {
-    id: 6,
-    title: '春季物理',
-    image: 'https://picsum.photos/seed/cat/600/400',
-    lessons: 13,
-    validity: '永久有效',
-    showReview: true
-  },
-];
-
-const SCHEDULE_EVENTS = [
-  {
-    id: 1,
-    time: '16:20',
-    title: '111',
-    courseName: '质心学院',
-    unitName: '未分类课程-系统为您自动命名',
-    image: 'https://picsum.photos/seed/robot/200/120'
-  },
-  {
-    id: 2,
-    time: '19:55',
-    title: 'ttt',
-    courseName: '1208测试-尔果专用',
-    unitName: '1',
-    image: 'https://picsum.photos/seed/test1/200/120'
-  },
-  {
-    id: 3,
-    time: '20:00',
-    title: 'aaa',
-    courseName: '1208测试-尔果专用',
-    unitName: '1',
-    image: 'https://picsum.photos/seed/test1/200/120'
+    title: 'SaaS产品经理实战训练营',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop',
+    progress: 5,
+    totalLessons: 30,
+    learnedLessons: 2,
+    lastLearnTime: '3天前',
+    nextLesson: '用户需求分析方法论',
+    status: 'learning'
   }
 ];
 
-// --- Components ---
-
-export const LearningCenter: React.FC = () => {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'courses' | 'calendar'>('courses');
-  const [courseFilter, setCourseFilter] = useState<'all' | 'paid' | 'free'>('all');
-
-  return (
-    <div className="min-h-screen bg-[#f5f7fa] py-8 font-sans text-slate-700">
-      <div className="max-w-[1200px] mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-6">
-        
-        {/* Left Sidebar (Col 3) */}
-        <div className="md:col-span-3 flex flex-col gap-4">
-          
-          {/* User Info Card */}
-          <div className="bg-white rounded-2xl p-8 flex flex-col items-center shadow-sm">
-            <div className="w-20 h-20 rounded-full bg-slate-100 p-1 mb-3 overflow-hidden">
-                <img 
-                    src={user?.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=ZhaoFeng"} 
-                    alt="avatar" 
-                    className="w-full h-full object-cover rounded-full"
-                />
-            </div>
-            <h3 className="font-bold text-lg text-slate-800">{user?.username || '赵峰'}</h3>
-          </div>
-
-          {/* Navigation Menu */}
-          <div className="bg-white rounded-2xl py-6 shadow-sm overflow-hidden">
-             <div 
-                onClick={() => setActiveTab('courses')}
-                className={`
-                    relative px-8 py-3.5 cursor-pointer font-bold flex items-center gap-3 transition-colors
-                    ${activeTab === 'courses' ? 'text-brand-600 bg-brand-50/10' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50'}
-                `}
-             >
-                {activeTab === 'courses' && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-brand-500 rounded-r-md"></div>
-                )}
-                我的课程
-             </div>
-
-             <div 
-                onClick={() => setActiveTab('calendar')}
-                className={`
-                    relative px-8 py-3.5 cursor-pointer font-bold flex items-center gap-3 transition-colors
-                    ${activeTab === 'calendar' ? 'text-brand-600 bg-brand-50/10' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50'}
-                `}
-             >
-                {activeTab === 'calendar' && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-brand-500 rounded-r-md"></div>
-                )}
-                我的日历
-             </div>
-          </div>
-        </div>
-
-        {/* Main Content (Col 9) */}
-        <div className="md:col-span-9">
-            {activeTab === 'courses' ? (
-                <MyCoursesView filter={courseFilter} onFilterChange={setCourseFilter} />
-            ) : (
-                <MyCalendarView />
-            )}
-        </div>
-
-      </div>
-    </div>
-  );
+// Mock Event Database (Key: 'YYYY-MM-DD')
+const EVENT_DATABASE: Record<string, { type: 'live' | 'exam' | 'deadline', title: string, time: string }[]> = {
+    '2024-05-15': [{ type: 'live', title: '雅思口语直播陪练', time: '19:30' }],
+    '2024-05-18': [{ type: 'exam', title: '公考申论模拟考试', time: '09:00' }],
+    '2024-05-20': [{ type: 'deadline', title: 'Python 作业截止', time: '23:59' }],
+    '2024-05-24': [{ type: 'live', title: '前端架构师公开课', time: '20:00' }],
+    '2024-06-01': [{ type: 'live', title: '六一儿童节活动', time: '10:00' }],
 };
 
-// --- Sub-components for Views ---
+export const LearningCenter: React.FC = () => {
+    const { user } = useAuth();
+    const [activeTab, setActiveTab] = useState<'learning' | 'completed' | 'expired'>('learning');
+    
+    // Calendar State
+    const [currentDate, setCurrentDate] = useState(new Date()); // Tracks the month we are viewing
+    const [selectedDate, setSelectedDate] = useState(new Date()); // Tracks the selected day
 
-const MyCoursesView = ({ filter, onFilterChange }: { filter: string, onFilterChange: (v: any) => void }) => {
+    // --- Calendar Logic ---
+    const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+    const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay(); // 0 = Sun
+
+    const generateCalendarGrid = () => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const daysInMonth = getDaysInMonth(year, month);
+        const firstDay = getFirstDayOfMonth(year, month); // 0 (Sun) - 6 (Sat)
+        
+        // Adjust for Mon-start week (optional, sticking to Sun-start for simplicity or standard)
+        // Let's do Sun start for standard calendar look
+        
+        const days = [];
+        // Empty slots for previous month
+        for (let i = 0; i < firstDay; i++) {
+            days.push(null);
+        }
+        // Actual days
+        for (let i = 1; i <= daysInMonth; i++) {
+            days.push(new Date(year, month, i));
+        }
+        return days;
+    };
+
+    const formatDateKey = (date: Date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
+
+    const isSameDay = (d1: Date, d2: Date) => {
+        return d1.getFullYear() === d2.getFullYear() &&
+               d1.getMonth() === d2.getMonth() &&
+               d1.getDate() === d2.getDate();
+    };
+
+    const handlePrevMonth = () => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    };
+
+    const handleNextMonth = () => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    };
+
+    const calendarGrid = generateCalendarGrid();
+    const selectedDateKey = formatDateKey(selectedDate);
+    const selectedDateEvents = EVENT_DATABASE[selectedDateKey] || [];
+
+    const filteredCourses = MY_COURSES.filter(course => {
+        if (activeTab === 'learning') return course.status === 'learning';
+        if (activeTab === 'completed') return course.status === 'completed';
+        return true;
+    });
+
     return (
-        <div className="bg-white rounded-2xl shadow-sm min-h-[600px] p-6">
-            
-            {/* Tabs Header */}
-            <div className="flex items-center gap-8 border-b border-slate-100 pb-2 mb-6 relative">
-                <button 
-                    onClick={() => onFilterChange('all')}
-                    className={`font-bold text-sm pb-2 relative transition-colors ${filter === 'all' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                    全部课程 38
-                    {filter === 'all' && <div className="absolute bottom-[-9px] left-1/2 -translate-x-1/2 w-6 h-1 bg-brand-500 rounded-full"></div>}
-                </button>
-                <button 
-                    onClick={() => onFilterChange('paid')}
-                    className={`font-bold text-sm pb-2 relative transition-colors ${filter === 'paid' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                    付费课程
-                    {filter === 'paid' && <div className="absolute bottom-[-9px] left-1/2 -translate-x-1/2 w-6 h-1 bg-brand-500 rounded-full"></div>}
-                </button>
-                <button 
-                    onClick={() => onFilterChange('free')}
-                    className={`font-bold text-sm pb-2 relative transition-colors ${filter === 'free' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                    免费课程
-                    {filter === 'free' && <div className="absolute bottom-[-9px] left-1/2 -translate-x-1/2 w-6 h-1 bg-brand-500 rounded-full"></div>}
-                </button>
-            </div>
+        <div className="bg-[#f8fafc] dark:bg-slate-950 min-h-screen py-8 font-sans transition-colors">
+            <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8">
+                
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                            你好，{user?.username || '同学'}
+                            <span className="px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-full flex items-center gap-1">
+                                <Flame size={12} className="fill-current" /> Lv.12 学霸
+                            </span>
+                        </h1>
+                        <p className="text-slate-500 dark:text-slate-400 text-base mt-2 font-medium">
+                            今天是你加入魔果云课的第 <span className="text-brand-600 dark:text-brand-400 font-bold">128</span> 天，继续保持！
+                        </p>
+                    </div>
+                    <div className="flex gap-3">
+                         <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors shadow-sm">
+                            <Clock size={16} /> 学习记录
+                         </button>
+                    </div>
+                </div>
 
-            {/* Course Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {COURSES_LIST.map((course) => (
-                    <div key={course.id} className="group flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-slate-100/50">
-                        {/* Image Area */}
-                        <div className="relative aspect-[16/9] overflow-hidden">
-                            <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            {course.showReview && (
-                                <div className="absolute bottom-2 right-2">
-                                    <button className="bg-white/90 backdrop-blur text-brand-600 text-[10px] font-bold px-2 py-1 rounded shadow-sm hover:bg-brand-500 hover:text-white transition-colors">
-                                        去评价
-                                    </button>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    {/* Left: Course List (Span 9) */}
+                    <div className="lg:col-span-9">
+                        
+                        {/* Tabs */}
+                        <div className="flex items-center gap-8 border-b border-slate-200 dark:border-slate-800 mb-6">
+                            {[
+                                { id: 'learning', label: '最近学习' }, 
+                                { id: 'completed', label: '已学完' }, 
+                                { id: 'expired', label: '已过期' }
+                            ].map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id as any)}
+                                    className={`pb-4 text-base font-bold border-b-[3px] transition-all rounded-t-sm ${
+                                        activeTab === tab.id 
+                                        ? 'border-brand-500 text-brand-600 dark:text-brand-400' 
+                                        : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                                    }`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Course List */}
+                        <div className="space-y-4">
+                            {filteredCourses.length > 0 ? filteredCourses.map(course => (
+                                <div key={course.id} className="group bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-5 hover:shadow-lg hover:border-brand-200 dark:hover:border-brand-900 transition-all duration-300 cursor-pointer">
+                                    {/* Image */}
+                                    <div className="w-full sm:w-56 aspect-video shrink-0 rounded-xl overflow-hidden relative bg-slate-200 dark:bg-slate-800">
+                                        <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="w-12 h-12 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center shadow-xl">
+                                                <Play size={24} className="text-white ml-1" fill="currentColor" />
+                                            </div>
+                                        </div>
+                                        <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/60 backdrop-blur-sm rounded text-[10px] text-white font-bold">
+                                            {course.status === 'completed' ? '已完成' : '学习中'}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Info */}
+                                    <div className="flex-1 flex flex-col py-1 min-w-0">
+                                        <div>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-lg font-bold text-slate-800 dark:text-white line-clamp-1 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                                                    {course.title}
+                                                </h3>
+                                                <button className="text-slate-300 hover:text-slate-500 dark:hover:text-slate-200">
+                                                    <MoreVertical size={20} />
+                                                </button>
+                                            </div>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 mb-4">
+                                                <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-bold text-slate-600 dark:text-slate-300">
+                                                    {course.status === 'completed' ? '复习' : '上次学至'}
+                                                </span>
+                                                <span className="truncate font-medium">{course.nextLesson}</span>
+                                            </p>
+                                        </div>
+                                        
+                                        <div className="mt-auto flex items-end gap-4">
+                                            <div className="flex-1">
+                                                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-medium">
+                                                    <span>已学 {course.learnedLessons}/{course.totalLessons} 课时</span>
+                                                    <span>{course.progress}%</span>
+                                                </div>
+                                                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                    <div 
+                                                        className={`h-full rounded-full ${course.status === 'completed' ? 'bg-emerald-500' : 'bg-brand-500'}`} 
+                                                        style={{ width: `${course.progress}%` }}
+                                                    ></div>
+                                                </div>
+                                            </div>
+                                            <button className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 ${
+                                                course.status === 'completed' 
+                                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200' 
+                                                : 'bg-slate-900 dark:bg-brand-600 text-white hover:bg-brand-600 dark:hover:bg-brand-500'
+                                            }`}>
+                                                {course.status === 'completed' ? '查看证书' : '继续学习'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <BookOpen size={32} className="text-slate-300" />
+                                    </div>
+                                    <p className="text-slate-500 font-medium">暂无相关课程</p>
+                                    <button className="mt-4 text-brand-600 font-bold hover:underline">去选课中心逛逛</button>
                                 </div>
                             )}
                         </div>
-
-                        {/* Content Area */}
-                        <div className="p-4 flex-1 flex flex-col">
-                            <h4 className="font-bold text-slate-800 text-sm mb-4 line-clamp-1" title={course.title}>
-                                {course.title}
-                            </h4>
-                            
-                            <div className="mt-auto space-y-1">
-                                <p className="text-[11px] text-slate-400">
-                                    课时数：{course.lessons}课时
-                                </p>
-                                <p className="text-[11px] text-slate-400">
-                                    课程有效期：{course.validity}
-                                </p>
-                            </div>
-                        </div>
                     </div>
-                ))}
-            </div>
-        </div>
-    );
-}
 
-const MyCalendarView = () => {
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
-            
-            {/* Calendar Widget (Left) */}
-            <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm p-6 h-fit">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6 px-2">
-                    <button className="p-1 text-slate-400 hover:text-brand-600 hover:bg-slate-50 rounded"><ChevronLeft size={16}/></button>
-                    <div className="flex items-center gap-2 font-bold text-slate-800">
-                        <span>2026年1月</span>
-                        <div className="w-5 h-5 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-xs">今</div>
-                    </div>
-                    <button className="p-1 text-slate-400 hover:text-brand-600 hover:bg-slate-50 rounded"><ChevronRight size={16}/></button>
-                </div>
-
-                {/* Calendar Grid Header */}
-                <div className="grid grid-cols-7 text-center mb-4">
-                    {['一', '二', '三', '四', '五', '六', '日'].map(d => (
-                        <div key={d} className="text-xs text-slate-400 font-medium">{d}</div>
-                    ))}
-                </div>
-
-                {/* Calendar Dates (Mock for Jan 2026 - starting roughly correct for demo) */}
-                <div className="grid grid-cols-7 text-center gap-y-4">
-                    {/* Previous month days */}
-                    {[29, 30, 31].map(d => (
-                         <div key={`prev-${d}`} className="text-sm text-slate-300">{d}</div>
-                    ))}
-                    {/* Current month days */}
-                    {Array.from({length: 31}, (_, i) => i + 1).map(d => {
-                        const isSelected = d === 7; // Mock selected date
-                        const hasEvent = d === 6 || d === 7 || d === 9;
-                        return (
-                            <div key={d} className="flex flex-col items-center justify-center gap-1 cursor-pointer group relative">
-                                <div className={`
-                                    w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium transition-all
-                                    ${isSelected ? 'bg-brand-500 text-white shadow-md shadow-brand-200' : 'text-slate-700 hover:bg-slate-100'}
-                                `}>
-                                    {d}
+                    {/* Right: Sidebar & Improved Calendar (Span 3) */}
+                    <div className="lg:col-span-3 space-y-6">
+                        
+                        {/* --- NEW CALENDAR WIDGET --- */}
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-5">
+                            {/* Calendar Header */}
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                    <CalendarIcon size={18} className="text-brand-500" /> 
+                                    {currentDate.getFullYear()}年 {currentDate.getMonth() + 1}月
+                                </h3>
+                                <div className="flex gap-1">
+                                    <button onClick={handlePrevMonth} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                                        <ChevronLeft size={16} />
+                                    </button>
+                                    <button onClick={handleNextMonth} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                                        <ChevronRight size={16} />
+                                    </button>
                                 </div>
-                                {hasEvent && !isSelected && (
-                                    <div className="w-1 h-1 rounded-full bg-brand-400"></div>
+                            </div>
+                            
+                            {/* Days Grid */}
+                            <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+                                {['日','一','二','三','四','五','六'].map(d => (
+                                    <div key={d} className="text-[10px] font-bold text-slate-400 py-2">{d}</div>
+                                ))}
+                                
+                                {calendarGrid.map((date, idx) => {
+                                    if (!date) return <div key={`empty-${idx}`}></div>;
+                                    
+                                    const dateKey = formatDateKey(date);
+                                    const hasEvents = !!EVENT_DATABASE[dateKey];
+                                    const isSelected = isSameDay(date, selectedDate);
+                                    const isToday = isSameDay(date, new Date());
+                                    
+                                    return (
+                                        <button 
+                                            key={dateKey}
+                                            onClick={() => setSelectedDate(date)}
+                                            className={`
+                                                aspect-square rounded-full flex flex-col items-center justify-center text-xs font-medium relative transition-all duration-200
+                                                ${isSelected 
+                                                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg scale-105' 
+                                                    : isToday
+                                                        ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-bold'
+                                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                                }
+                                            `}
+                                        >
+                                            {date.getDate()}
+                                            {/* Event Dot */}
+                                            {hasEvents && !isSelected && (
+                                                <span className="absolute bottom-1.5 w-1 h-1 rounded-full bg-rose-500"></span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Divider */}
+                            <div className="h-px bg-slate-100 dark:bg-slate-800 my-4"></div>
+
+                            {/* Selected Date Events */}
+                            <div className="space-y-3">
+                                <p className="text-xs font-bold text-slate-400 flex justify-between">
+                                    <span>{selectedDate.getMonth() + 1}月{selectedDate.getDate()}日 安排</span>
+                                    {selectedDateEvents.length > 0 && <span className="text-brand-500">{selectedDateEvents.length} 个日程</span>}
+                                </p>
+                                
+                                {selectedDateEvents.length > 0 ? (
+                                    selectedDateEvents.map((ev, i) => (
+                                        <div key={i} className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700/50 hover:border-brand-200 dark:hover:border-brand-900 transition-colors group cursor-pointer">
+                                            <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${ev.type === 'live' ? 'bg-rose-500 animate-pulse' : ev.type === 'exam' ? 'bg-amber-500' : 'bg-blue-500'}`}></div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{ev.title}</h4>
+                                                <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                                                    <Clock size={10} /> {ev.time}
+                                                </p>
+                                            </div>
+                                            {ev.type === 'live' && <Video size={14} className="text-rose-500" />}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="py-4 text-center">
+                                        <p className="text-xs text-slate-400">今日暂无课程安排</p>
+                                        <button className="text-xs font-bold text-brand-600 mt-2 hover:underline">去选课</button>
+                                    </div>
                                 )}
                             </div>
-                        )
-                    })}
-                     {/* Next month days */}
-                     {[1].map(d => (
-                         <div key={`next-${d}`} className="text-sm text-slate-300">{d}</div>
-                    ))}
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-slate-50">
-                     <button className="w-full py-2.5 border border-brand-200 text-brand-600 rounded-xl text-sm font-bold hover:bg-brand-50 transition-colors">
-                        全部课程
-                     </button>
-                </div>
-            </div>
-
-            {/* Timeline (Right) */}
-            <div className="lg:col-span-7 space-y-0 h-full">
-                {SCHEDULE_EVENTS.map((event, index) => (
-                    <div key={event.id} className="flex gap-4 relative pb-8 last:pb-0">
-                        {/* Timeline Line */}
-                        {index !== SCHEDULE_EVENTS.length - 1 && (
-                            <div className="absolute left-[2.85rem] top-8 bottom-0 w-px bg-slate-200/50"></div>
-                        )}
-                        
-                        {/* Time Node */}
-                        <div className="flex flex-col items-end w-12 shrink-0 pt-1">
-                            <span className="text-slate-500 font-bold text-sm">{event.time}</span>
-                            <div className="w-2 h-2 rounded-full bg-slate-300 mt-2 translate-x-[1.3rem] ring-4 ring-[#f5f7fa]"></div>
                         </div>
 
-                        {/* Content Card */}
-                        <div className="flex-1 bg-white rounded-2xl p-4 shadow-sm ml-6 flex gap-4 items-center group cursor-pointer hover:shadow-md transition-all">
-                            <div className="w-32 h-20 rounded-lg overflow-hidden shrink-0 bg-slate-100">
-                                <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
-                            </div>
-                            
-                            <div className="flex-1 min-w-0">
-                                <h4 className="text-base font-bold text-slate-800 mb-1">{event.title}</h4>
-                                <div className="text-xs text-slate-500 space-y-0.5">
-                                    <p>所属课程：{event.courseName}</p>
-                                    <p className="truncate">所属单元：{event.unitName}</p>
+                        {/* Goals Widget */}
+                        <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl shadow-xl p-6 text-white relative overflow-hidden group">
+                             <div className="relative z-10">
+                                <h3 className="font-bold mb-4 flex items-center gap-2">
+                                    <Target size={20} className="text-yellow-300" /> 本周目标
+                                </h3>
+                                <div className="flex justify-between items-end mb-3">
+                                    <span className="text-indigo-100 text-sm font-medium">坚持学习打卡</span>
+                                    <span className="font-black text-3xl">4 <span className="text-sm font-bold text-indigo-300 opacity-70">/ 5天</span></span>
                                 </div>
-                            </div>
-                            
-                            <div className="text-right">
-                                <span className="text-sm font-medium text-slate-600 group-hover:text-brand-600 transition-colors">观看视频</span>
-                            </div>
+                                <div className="h-2 bg-black/20 rounded-full overflow-hidden mb-4">
+                                    <div className="h-full bg-yellow-400 w-[80%] rounded-full shadow-[0_0_10px_rgba(250,204,21,0.5)]"></div>
+                                </div>
+                                <p className="text-xs text-indigo-100 font-medium flex items-center gap-1.5 bg-white/10 w-fit px-2 py-1 rounded-lg">
+                                    <Trophy size={12} className="text-yellow-300" />
+                                    击败了全站 85% 的学员
+                                </p>
+                             </div>
+                             {/* Decorative Circles */}
+                             <div className="absolute top-[-20px] right-[-20px] w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+                             <div className="absolute bottom-[-10px] left-[-10px] w-24 h-24 bg-blue-500/20 rounded-full blur-2xl"></div>
                         </div>
-                    </div>
-                ))}
-            </div>
 
+                    </div>
+                </div>
+            </div>
         </div>
     );
-}
+};

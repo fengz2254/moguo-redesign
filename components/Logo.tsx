@@ -36,7 +36,7 @@ export const Logo: React.FC<LogoProps> = ({
       
       {withText && (
         <div className="flex flex-col">
-            <span className={`font-black text-2xl tracking-tight leading-none ${light ? 'text-white' : 'text-slate-800'} group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-brand-600 group-hover:to-pop-cyan transition-all duration-300`}>
+            <span className={`font-black text-2xl tracking-tight leading-none ${light ? 'text-white' : 'text-slate-800 dark:text-white'} group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-brand-600 group-hover:to-pop-cyan transition-all duration-300`}>
             魔果云课
             </span>
         </div>
