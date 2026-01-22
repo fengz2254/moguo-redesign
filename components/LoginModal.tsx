@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { X, User, Lock, Smartphone, ShieldCheck, QrCode, Monitor, ChevronRight, AlertCircle } from 'lucide-react';
 import { Logo } from './Logo';
@@ -22,6 +23,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Animation State
+  const [shakeAgreement, setShakeAgreement] = useState(false);
   
   const { login } = useAuth();
 
@@ -32,6 +36,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
       setError('');
       setAccount('');
       setPassword('');
+      setShakeAgreement(false);
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -47,6 +52,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
       }
       if (!agreed) {
           setError('请先阅读并同意用户协议');
+          setShakeAgreement(true);
+          setTimeout(() => setShakeAgreement(false), 600);
           return;
       }
 
@@ -219,19 +226,35 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
                         )}
                     </div>
 
-                    {/* Options Row: Auto Login & Forgot Password */}
-                    <div className="flex items-center justify-between mb-8 px-1">
-                        <label className="flex items-center gap-2 cursor-pointer group select-none">
-                            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${rememberMe ? 'bg-brand-500 border-brand-500' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 group-hover:border-brand-400'}`}>
-                                {rememberMe && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="w-3 h-3 text-white"><path d="M20 6L9 17l-5-5" /></svg>}
-                            </div>
-                            <input type="checkbox" className="hidden" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
-                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">30天内自动登录</span>
-                        </label>
+                    {/* Options Row: Auto Login, Forgot Password, and Terms */}
+                    <div className="mb-8 space-y-4">
+                        {/* Top: Auto Login & Forgot Password */}
+                        <div className="flex items-center justify-between px-1">
+                            <label className="flex items-center gap-2 cursor-pointer group select-none">
+                                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${rememberMe ? 'bg-brand-500 border-brand-500' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 group-hover:border-brand-400'}`}>
+                                    {rememberMe && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="w-3 h-3 text-white"><path d="M20 6L9 17l-5-5" /></svg>}
+                                </div>
+                                <input type="checkbox" className="hidden" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                                <span className="text-xs font-medium text-slate-500 dark:text-slate-400 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">30天内自动登录</span>
+                            </label>
+                            
+                            <a href="#" className="text-xs font-bold text-slate-400 hover:text-brand-500 transition-colors">
+                                忘记密码？
+                            </a>
+                        </div>
                         
-                        <a href="#" className="text-xs font-bold text-slate-400 hover:text-brand-500 transition-colors">
-                            忘记密码？
-                        </a>
+                        {/* Bottom: Terms Agreement (Animated Shake) */}
+                        <div className={`flex items-center px-1 py-1 -mx-1 rounded-lg transition-colors duration-300 ${shakeAgreement ? 'animate-shake bg-rose-50 dark:bg-rose-900/20' : ''}`}>
+                            <label className="flex items-start gap-2 cursor-pointer group">
+                                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 mt-0.5 ${agreed ? 'bg-brand-500 border-brand-500' : (shakeAgreement ? 'border-rose-400 bg-rose-50' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 group-hover:border-brand-400')}`}>
+                                    {agreed && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="w-3 h-3 text-white"><path d="M20 6L9 17l-5-5" /></svg>}
+                                </div>
+                                <input type="checkbox" className="hidden" checked={agreed} onChange={() => setAgreed(!agreed)} />
+                                <span className={`text-xs select-none leading-normal transition-colors ${shakeAgreement ? 'text-rose-500 font-medium' : 'text-slate-400'}`}>
+                                    已阅读并同意 <a href="#" className={`underline underline-offset-2 transition-colors ${shakeAgreement ? 'text-rose-600 decoration-rose-200' : 'text-slate-600 dark:text-slate-300 hover:text-brand-500 decoration-slate-200 dark:decoration-slate-600'}`}>用户协议</a> 与 <a href="#" className={`underline underline-offset-2 transition-colors ${shakeAgreement ? 'text-rose-600 decoration-rose-200' : 'text-slate-600 dark:text-slate-300 hover:text-brand-500 decoration-slate-200 dark:decoration-slate-600'}`}>隐私政策</a>
+                                </span>
+                            </label>
+                        </div>
                     </div>
 
                     {/* Action Button */}
@@ -249,19 +272,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
                             </>
                         )}
                     </button>
-
-                    {/* Footer Options: Terms */}
-                    <div className="flex items-center justify-center mt-5">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${agreed ? 'bg-brand-500 border-brand-500' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 group-hover:border-brand-400'}`}>
-                                {agreed && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="w-3 h-3 text-white"><path d="M20 6L9 17l-5-5" /></svg>}
-                            </div>
-                            <input type="checkbox" className="hidden" checked={agreed} onChange={() => setAgreed(!agreed)} />
-                            <span className="text-xs text-slate-400 select-none">
-                                已阅读并同意 <a href="#" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 underline decoration-slate-200 dark:decoration-slate-600 underline-offset-2 transition-colors">用户协议</a> 与 <a href="#" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 underline decoration-slate-200 dark:decoration-slate-600 underline-offset-2 transition-colors">隐私政策</a>
-                            </span>
-                        </label>
-                    </div>
                     
                     {/* Social Login Divider */}
                     <div className="mt-8 relative flex justify-center text-xs text-slate-400 font-medium">
@@ -290,8 +300,19 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
             from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            15% { transform: translateX(-4px); }
+            30% { transform: translateX(4px); }
+            45% { transform: translateX(-4px); }
+            60% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+        }
         .animate-scale-in {
             animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
       `}</style>
     </div>
