@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronRight, ChevronLeft, Sparkles, User, ArrowRight } from 'lucide-react';
 import { RECOMMENDED_COURSES } from '../constants';
@@ -47,11 +48,12 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
   const currentCourse = slides[currentSlide];
 
   return (
-    <div className="relative pb-24 pt-6"> {/* Increased pb for visual breathability */}
+    <div className="relative pb-16 pt-4"> {/* Reduced top/bottom padding for tighter layout */}
       <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Modern Card Banner Container (Increased height for poster images and wider screens) */}
-        <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl h-[480px] md:h-[640px] group bg-slate-900 ring-1 ring-slate-900/5 select-none transition-all duration-500">
+        {/* Modern Card Banner Container */}
+        {/* Height Reduced: h-[360px] mobile / h-[480px] desktop (Was 480/640) */}
+        <div className="relative rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl h-[360px] md:h-[500px] group bg-slate-900 ring-1 ring-slate-900/5 select-none transition-all duration-500">
             
              {/* Dynamic Background Image Layer */}
              {slides.map((slide, index) => (
@@ -67,12 +69,12 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
                         className="w-full h-full object-cover"
                     />
                     
-                    {/* Gradient Overlay - Only show if we are NOT hiding text overlay (i.e. for standard atmospheric images) */}
+                    {/* Gradient Overlay */}
                     {!slide.hideTextOverlay && (
                          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
                     )}
                     
-                    {/* Minimal Overlay for Poster Images to ensure controls are visible, but keep image clear */}
+                    {/* Minimal Overlay for Poster Images */}
                     {slide.hideTextOverlay && (
                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
                     )}
@@ -80,32 +82,32 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
              ))}
 
              {/* Content Layer (Left Aligned - High Readability) */}
-             {/* Only render this detailed text layer if the image is NOT a poster */}
              {!currentCourse.hideTextOverlay && (
-                 <div className="absolute inset-0 z-10 flex flex-col justify-center px-8 md:px-20 max-w-4xl">
+                 <div className="absolute inset-0 z-10 flex flex-col justify-center px-6 md:px-20 max-w-4xl">
                     
                     {/* Content Animation Wrapper */}
                     <div className={`transition-all duration-500 transform ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
                         
                         {/* Badge / Tag */}
-                        <div className="flex items-center gap-3 mb-6">
-                            <span className="bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-brand-500/30 tracking-wide uppercase">
+                        <div className="flex items-center gap-3 mb-4 md:mb-6">
+                            <span className="bg-brand-500 text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-brand-500/30 tracking-wide uppercase">
                                 <Sparkles size={12} fill="currentColor" /> 
                                 {currentCourse.tags[0] || 'Editor\'s Choice'}
                             </span>
                             <div className="h-4 w-px bg-white/20"></div>
-                            <span className="text-brand-200 text-sm font-bold tracking-wide">
+                            <span className="text-brand-200 text-xs md:text-sm font-bold tracking-wide">
                                 {currentCourse.institution}
                             </span>
                         </div>
 
-                        {/* Main Title - Big & Bold */}
-                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-8 drop-shadow-md tracking-tight line-clamp-2">
+                        {/* Main Title - Scaled down slightly for new height */}
+                        {/* Text size reduced from 6xl to 5xl to fit the shorter banner */}
+                        <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-[1.15] mb-4 md:mb-6 drop-shadow-md tracking-tight line-clamp-2">
                             {currentCourse.title}
                         </h1>
                         
                         {/* Meta Info Row */}
-                        <div className="flex flex-wrap items-center gap-6 text-slate-300 mb-10 font-medium text-sm md:text-base">
+                        <div className="flex flex-wrap items-center gap-4 md:gap-6 text-slate-300 mb-6 md:mb-8 font-medium text-xs md:text-sm">
                             <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full border border-white/5 backdrop-blur-sm">
                                 <div className="w-5 h-5 rounded-full bg-white/20 p-0.5">
                                     <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${currentCourse.instructor}`} className="w-full h-full rounded-full" />
@@ -113,32 +115,29 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
                                 <span className="text-white">{currentCourse.instructor}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <User size={16} />
+                                <User size={14} />
                                 <span>{currentCourse.studentCount} 人在学</span>
                             </div>
                         </div>
 
                         {/* Action Area: Price & CTA */}
-                        <div className="flex items-center gap-8">
-                            <button className="h-12 md:h-16 px-10 rounded-full bg-white text-slate-900 font-bold text-base md:text-lg flex items-center gap-2 transition-all hover:bg-brand-50 hover:text-brand-600 hover:scale-105 active:scale-95 shadow-xl group/btn">
+                        <div className="flex items-center gap-6 md:gap-8">
+                            <button className="h-10 md:h-14 px-8 md:px-10 rounded-full bg-white text-slate-900 font-bold text-sm md:text-base flex items-center gap-2 transition-all hover:bg-brand-50 hover:text-brand-600 hover:scale-105 active:scale-95 shadow-xl group/btn">
                                 开始学习
-                                <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
+                                <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>
 
                             <div className="flex flex-col">
                                 <div className="flex items-baseline gap-1.5">
                                     {currentCourse.price === 0 ? (
-                                        <span className="text-3xl font-black text-brand-400">免费</span>
+                                        <span className="text-2xl md:text-3xl font-black text-brand-400">免费</span>
                                     ) : (
                                         <>
-                                            <span className="text-sm font-bold text-white/60">¥</span>
-                                            <span className="text-3xl font-black text-white tracking-tighter">{currentCourse.price}</span>
+                                            <span className="text-xs md:text-sm font-bold text-white/60">¥</span>
+                                            <span className="text-2xl md:text-3xl font-black text-white tracking-tighter">{currentCourse.price}</span>
                                         </>
                                     )}
                                 </div>
-                                {currentCourse.originalPrice && (
-                                    <span className="text-xs text-slate-500 line-through decoration-slate-500/50">原价 ¥{currentCourse.originalPrice}</span>
-                                )}
                             </div>
                         </div>
 
@@ -157,29 +156,29 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
              )}
 
              {/* Navigation Arrows (Subtle) */}
-             <div className="absolute bottom-8 right-8 flex gap-3 z-20">
+             <div className="hidden md:flex absolute bottom-8 right-8 gap-3 z-20">
                 <button 
                     onClick={handlePrev}
-                    className="w-12 h-12 rounded-full border border-white/10 bg-black/20 hover:bg-white hover:text-slate-900 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                    className="w-10 h-10 rounded-full border border-white/10 bg-black/20 hover:bg-white hover:text-slate-900 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95"
                 >
-                    <ChevronLeft size={24} />
+                    <ChevronLeft size={20} />
                 </button>
                 <button 
                     onClick={handleNext}
-                    className="w-12 h-12 rounded-full border border-white/10 bg-black/20 hover:bg-white hover:text-slate-900 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                    className="w-10 h-10 rounded-full border border-white/10 bg-black/20 hover:bg-white hover:text-slate-900 backdrop-blur-md text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95"
                 >
-                    <ChevronRight size={24} />
+                    <ChevronRight size={20} />
                 </button>
              </div>
 
              {/* Slide Indicators */}
-             <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 md:translate-x-0 ${currentCourse.hideTextOverlay ? 'md:left-auto md:right-40' : 'md:left-20'} flex gap-2 z-20 transition-all duration-500`}>
+             <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 ${currentCourse.hideTextOverlay ? 'md:left-auto md:right-40' : 'md:left-20'} flex gap-1.5 z-20 transition-all duration-500`}>
                 {slides.map((_, idx) => (
                     <button
                         key={idx}
                         onClick={() => setCurrentSlide(idx)}
-                        className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${
-                            idx === currentSlide ? 'bg-brand-500 w-10' : 'bg-white/40 w-3 hover:bg-white/80'
+                        className={`h-1 rounded-full transition-all duration-300 shadow-sm ${
+                            idx === currentSlide ? 'bg-brand-500 w-8' : 'bg-white/40 w-2 hover:bg-white/80'
                         }`}
                     />
                 ))}
@@ -190,10 +189,10 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
       {/* FLOATING SEARCH DOCK - Enhanced Design */}
       <div className="absolute bottom-0 left-0 right-0 z-30 px-4 translate-y-1/2 pointer-events-none">
          <div className="max-w-3xl mx-auto pointer-events-auto">
-            <div className="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-white/50 dark:border-white/10 flex items-center gap-2 relative ring-1 ring-white/40 dark:ring-white/5 backdrop-blur-xl transition-colors duration-300">
+            <div className="bg-white/90 dark:bg-slate-800/90 rounded-2xl p-2 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-white/50 dark:border-white/10 flex items-center gap-2 relative ring-1 ring-white/40 dark:ring-white/5 backdrop-blur-xl transition-colors duration-300">
                 
                 {/* Input */}
-                <div className="flex-1 flex items-center h-12 md:h-14 bg-white/50 dark:bg-slate-900/50 rounded-xl px-4 border border-transparent focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:border-brand-200 dark:focus-within:border-brand-900 focus-within:ring-2 focus-within:ring-brand-50 dark:focus-within:ring-brand-900/20 transition-all group">
+                <div className="flex-1 flex items-center h-12 md:h-14 bg-slate-50 dark:bg-slate-900/50 rounded-xl px-4 border border-transparent focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:border-brand-200 dark:focus-within:border-brand-900 focus-within:ring-2 focus-within:ring-brand-50 dark:focus-within:ring-brand-900/20 transition-all group">
                     <Search className="text-slate-400 group-focus-within:text-brand-500 mr-3 transition-colors" size={20} />
                     <input 
                         type="text" 
