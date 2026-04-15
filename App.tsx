@@ -17,6 +17,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { MobileTabBar } from './components/MobileTabBar';
 import { LoginModal } from './components/LoginModal';
 import { CategoryDrawer } from './components/CategoryDrawer';
+import { LeftSidebar } from './components/LeftSidebar';
 import { INITIAL_MY_CATEGORIES } from './constants';
 
 type View = 'home' | 'learning-center' | 'search-results' | 'download' | 'course-detail' | 'institution-settlement';
@@ -27,6 +28,7 @@ const AppContent: React.FC = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
   // Lifted state for categories
   const [myCategories, setMyCategories] = useState<string[]>(INITIAL_MY_CATEGORIES);
@@ -63,9 +65,17 @@ const AppContent: React.FC = () => {
   }, []);
 
   return (
-    // Added padding-bottom to accommodate the mobile tab bar
-    <div className="min-h-screen flex flex-col relative bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 md:pb-0">
+    // Added padding-bottom to accommodate the mobile tab bar, and lg:pl-64 or lg:pl-20 for the left sidebar
+    <div className={`min-h-screen flex flex-col relative bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-all duration-300 pb-24 md:pb-0 ${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'}`}>
       
+      {/* Left Navigation Sidebar for Design Preview */}
+      <LeftSidebar 
+        currentView={currentView} 
+        onNavigate={(v) => handleNavigate(v as View)} 
+        isCollapsed={isSidebarCollapsed}
+        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
+
       {/* Hide Navbar on Course Detail for immersion, or keep it? Keeping it for consistency but maybe simpler style */}
       <Navbar 
         onNavigate={(v) => handleNavigate(v as View)} 

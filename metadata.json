@@ -1,5 +1,7 @@
 {
   "name": "魔果- 前台网页",
   "description": "A modern UI redesign for the Moguoyunke online education platform homepage.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "C7": [],
+  "aq": []
 }
