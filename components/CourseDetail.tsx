@@ -95,11 +95,11 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
     <div className="bg-[#0f172a] h-screen w-screen flex flex-col font-sans overflow-hidden">
       
       {/* 1. Header - Fixed Height */}
-      <header className="h-14 lg:h-16 bg-[#0f172a] border-b border-white/10 flex items-center justify-between px-4 lg:px-6 shrink-0 z-20">
+      <header className={`h-14 lg:h-16 border-b flex items-center justify-between px-4 lg:px-6 shrink-0 z-20 transition-colors duration-500 ${isSidebarCollapsed ? 'bg-[#080b12] border-white/5' : 'bg-[#0f172a] border-white/10'}`}>
           <div className="flex items-center gap-3 lg:gap-4 min-w-0">
               <button 
                 onClick={onBack} 
-                className="w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors shrink-0"
+                className={`w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors shrink-0 ${isSidebarCollapsed ? 'text-slate-500 hover:text-slate-300' : 'text-slate-300 hover:text-white'}`}
                 title="返回课程主页"
               >
                   <ArrowLeft size={20} />
@@ -145,7 +145,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
           
           {/* LEFT: Cinema Player Stage - Auto Resizing */}
           <div 
-            className="w-full aspect-video lg:aspect-auto lg:flex-1 bg-black lg:rounded-2xl overflow-hidden flex flex-col relative group shadow-2xl border-b lg:border border-white/10 ring-0 lg:ring-1 ring-black transition-all duration-300 shrink-0"
+            className="w-full aspect-video lg:aspect-auto lg:flex-1 bg-black lg:rounded-2xl overflow-hidden flex flex-col relative group shadow-2xl lg:shadow-[0_0_40px_-15px_rgba(16,185,129,0.15)] border-b lg:border border-white/10 ring-0 lg:ring-1 ring-black transition-all duration-500 shrink-0"
             onMouseEnter={() => setShowControls(true)}
             onMouseLeave={() => isPlaying && setShowControls(false)}
           >
@@ -175,7 +175,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
 
               {/* Floating Control Bar - Always at bottom of player area */}
               <div className={`absolute bottom-2 lg:bottom-6 left-1/2 -translate-x-1/2 w-[95%] lg:w-[90%] max-w-3xl transition-all duration-500 transform ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
-                  <div className="bg-[#1e293b]/80 backdrop-blur-xl border border-white/10 rounded-xl lg:rounded-2xl px-3 lg:px-6 py-2 lg:py-4 shadow-2xl">
+                  <div className="bg-[#1e293b]/70 backdrop-blur-2xl border border-white/10 border-t-white/20 rounded-xl lg:rounded-2xl px-3 lg:px-6 py-2 lg:py-4 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
                       {/* Progress Bar */}
                       <div className="flex items-center gap-3 mb-2 lg:mb-3 px-1 group/slider cursor-pointer relative py-1 lg:py-2">
                           <div className="flex-1 h-1 lg:h-1.5 bg-white/20 rounded-full overflow-hidden">
@@ -200,7 +200,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
                                   </div>
                               </div>
 
-                              <span className="text-[10px] lg:text-xs font-mono font-medium text-slate-300 select-none">
+                              <span className="text-[10px] lg:text-xs font-mono font-medium text-slate-300 select-none tabular-nums tracking-wide">
                                   15:30 <span className="text-slate-600 mx-1">/</span> 45:00
                               </span>
                           </div>
@@ -251,7 +251,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
               {/* Scrollable Content Area */}
               <div className="flex-1 overflow-hidden bg-white dark:bg-slate-900 lg:rounded-2xl shadow-xl border-t lg:border border-slate-200 dark:border-slate-800 flex flex-col">
                   {activeTab === 'directory' ? (
-                      <div className="flex-1 overflow-y-auto custom-scrollbar pb-4">
+                      <div key="directory" className="flex-1 overflow-y-auto custom-scrollbar pb-4 tab-content-enter flex flex-col">
                           {chapters.map((chapter, idx) => (
                               <div key={chapter.id} className="relative">
                                   {/* Chapter Header - Sticky within the scroll container */}
@@ -371,7 +371,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
                           ))}
                       </div>
                   ) : (
-                      <div className="flex-1 flex flex-col bg-white dark:bg-slate-900 h-full">
+                      <div key="notes" className="flex-1 flex flex-col bg-white dark:bg-slate-900 h-full tab-content-enter">
                           {/* Note Title - More prominent, cleaner */}
                           <div className="px-6 pt-6 pb-4">
                               <input 
@@ -383,7 +383,7 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
                           </div>
                           
                           {/* Toolbar - Modern, airy, better button hierarchy */}
-                          <div className="flex items-center justify-between px-2 lg:px-4 py-2 mx-2 bg-slate-50/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-100 dark:border-slate-700/50 mb-2 overflow-x-auto custom-scrollbar">
+                          <div className="flex items-center justify-between px-2 lg:px-4 py-2 mx-2 bg-slate-50/70 dark:bg-slate-800/70 backdrop-blur-md rounded-xl border border-slate-200/50 dark:border-slate-700/50 border-t-white/80 dark:border-t-white/10 shadow-sm mb-2 overflow-x-auto custom-scrollbar">
                               <div className="flex items-center gap-0.5 shrink-0">
                                   <button className="p-1.5 lg:p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-500/10 rounded-lg transition-all" title="插入公式"><Sigma size={16} strokeWidth={2.5} /></button>
                                   <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
@@ -418,6 +418,13 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
       </div>
 
       <style>{`
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateX(8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .tab-content-enter {
+            animation: fadeSlideIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
         .custom-scrollbar::-webkit-scrollbar {
             width: 5px;
         }
