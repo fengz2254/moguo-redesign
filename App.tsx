@@ -64,6 +64,26 @@ const AppContent: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  if (currentView === 'course-detail') {
+      return (
+          <div className="flex flex-col h-[100dvh] overflow-hidden bg-[#0f172a]">
+              <Navbar 
+                onNavigate={(v) => handleNavigate(v as View)} 
+                currentView={currentView} 
+                onSearch={handleSearch}
+                onLoginClick={() => setIsLoginOpen(true)}
+                isDarkVariant={true}
+              />
+              <div className="flex-1 overflow-hidden relative">
+                  <CourseDetail 
+                    courseId={selectedCourseId} 
+                    onBack={() => handleNavigate('home')} 
+                  />
+              </div>
+          </div>
+      );
+  }
+
   return (
     // Added padding-bottom to accommodate the mobile tab bar, and lg:pl-64 or lg:pl-20 for the left sidebar
     <div className={`min-h-screen flex flex-col relative bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-all duration-300 pb-24 md:pb-0 ${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'}`}>
@@ -123,11 +143,6 @@ const AppContent: React.FC = () => {
           <DownloadCenter />
         ) : currentView === 'institution-settlement' ? (
           <InstitutionSettlement />
-        ) : currentView === 'course-detail' ? (
-          <CourseDetail 
-            courseId={selectedCourseId} 
-            onBack={() => handleNavigate('home')} 
-          />
         ) : (
           <LearningCenter />
         )}
@@ -140,13 +155,11 @@ const AppContent: React.FC = () => {
       <FloatingSidebar />
 
       {/* Mobile Tab Bar - Hide on Course Detail to allow bottom dock */}
-      {currentView !== 'course-detail' && (
-        <MobileTabBar 
-            currentView={currentView}
-            onNavigate={(view) => handleNavigate(view)}
-            onLogin={() => setIsLoginOpen(true)}
-        />
-      )}
+      <MobileTabBar 
+          currentView={currentView}
+          onNavigate={(view) => handleNavigate(view)}
+          onLogin={() => setIsLoginOpen(true)}
+      />
 
       {/* Global Login Modal */}
       <LoginModal 

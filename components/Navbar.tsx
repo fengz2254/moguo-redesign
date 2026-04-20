@@ -9,9 +9,10 @@ interface NavbarProps {
   currentView: 'home' | 'learning-center' | 'search-results' | 'download' | 'institution-settlement' | 'course-detail';
   onSearch: (query: string) => void;
   onLoginClick: () => void;
+  isDarkVariant?: boolean;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearch, onLoginClick }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearch, onLoginClick, isDarkVariant }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
@@ -90,7 +91,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
     <>
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled 
+        isDarkVariant 
+        ? 'bg-[#0f172a] text-white py-2 border-b border-white/5' 
+        : isScrolled 
         ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-soft py-2' 
         : 'bg-transparent py-4'
       }`}
@@ -98,12 +101,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
       <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0" onClick={() => onNavigate('home')}>
-            <Logo withText light={isScrolled && theme === 'dark'} />
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => onNavigate('home')}>
+            <Logo withText light={isDarkVariant || (isScrolled && theme === 'dark')} />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-1 items-center bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-full px-4">
+          <div className={`hidden md:flex space-x-1 items-center p-1 rounded-full px-4 ${isDarkVariant ? 'bg-white/5' : 'bg-slate-100/50 dark:bg-slate-800/50'}`}>
             {navLinks.map((link) => {
               const isActive = (link.view === currentView && currentView !== 'home') || (link.name === '首页' && currentView === 'home');
               
@@ -116,16 +119,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                     onClick={(e) => handleNavClick(e, link.name, link.view)}
                     className={`relative flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all duration-200 group
                         ${isActive 
-                            ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/30' 
-                            : 'text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-white dark:hover:bg-slate-700'
+                            ? (isDarkVariant ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/30' : 'bg-brand-500 text-white shadow-lg shadow-brand-500/30') 
+                            : (isDarkVariant ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-white dark:hover:bg-slate-700')
                         }
                     `}
                   >
-                    <span className={`p-1 rounded-full transition-colors ${isActive ? 'bg-white/20 text-white' : 'bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 group-hover:bg-brand-500 group-hover:text-white'}`}>
+                    <span className={`p-1 rounded-full transition-colors ${isActive ? 'bg-white/20 text-white' : (isDarkVariant ? 'bg-brand-500/20 text-brand-400 group-hover:bg-brand-500 group-hover:text-white' : 'bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 group-hover:bg-brand-500 group-hover:text-white')}`}>
                         <Store size={14} />
                     </span>
                     {link.name}
-                    <span className="absolute top-0 right-0 -mt-1 -mr-2 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-800 shadow-sm transform scale-90 group-hover:scale-105 transition-transform animate-pulse">
+                    <span className={`absolute top-0 right-0 -mt-1 -mr-2 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 shadow-sm transform scale-90 group-hover:scale-105 transition-transform animate-pulse ${isDarkVariant ? 'border-[#0f172a]' : 'border-white dark:border-slate-800'}`}>
                       免费
                     </span>
                   </a>
@@ -139,8 +142,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                   className={`
                     font-medium px-4 py-1.5 rounded-full transition-all duration-200 flex items-center
                     ${isActive 
-                        ? 'text-brand-600 dark:text-brand-400 bg-white dark:bg-slate-700 shadow-sm' 
-                        : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-white dark:hover:bg-slate-700'
+                        ? (isDarkVariant ? 'text-brand-400 bg-white/10' : 'text-brand-600 dark:text-brand-400 bg-white dark:bg-slate-700 shadow-sm') 
+                        : (isDarkVariant ? 'text-slate-400 hover:text-white hover:bg-white/10' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-white dark:hover:bg-slate-700')
                     }
                   `}
                 >
@@ -163,14 +166,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                   placeholder="请输入课程名称"
                   className={`
                     w-full pl-4 pr-10 py-2 rounded-lg border-2 outline-none transition-all text-sm
-                    ${isSearchFocused 
-                        ? 'border-brand-400 bg-white dark:bg-slate-800 dark:border-brand-500 shadow-sm' 
-                        : 'border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-brand-400'
+                    ${isDarkVariant 
+                        ? (isSearchFocused ? 'border-brand-500 bg-white/10 text-white' : 'border-white/10 bg-white/5 text-slate-300 focus:bg-white/10 focus:border-brand-500 placeholder-slate-500')
+                        : (isSearchFocused 
+                            ? 'border-brand-400 bg-white dark:bg-slate-800 dark:border-brand-500 shadow-sm' 
+                            : 'border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-brand-400')
                     }
                   `}
                 />
                 <Search 
-                    className={`w-4 h-4 absolute right-3 top-3 cursor-pointer transition-colors ${isSearchFocused ? 'text-brand-500' : 'text-slate-400'}`} 
+                    className={`w-4 h-4 absolute right-3 top-3 cursor-pointer transition-colors ${isSearchFocused ? 'text-brand-500' : (isDarkVariant ? 'text-slate-500' : 'text-slate-400')}`} 
                     onClick={() => handleSearchSubmit()}
                 />
             </div>
@@ -178,15 +183,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
             {/* Search History Dropdown */}
             {isSearchFocused && (
                 <div 
-                    className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 p-4 z-50 animate-fade-in origin-top"
+                    className={`absolute top-full left-0 w-full mt-2 rounded-xl shadow-xl border p-4 z-50 animate-fade-in origin-top ${isDarkVariant ? 'bg-[#1e293b] border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.5)]' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'}`}
                     onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking inside dropdown
                 >
-                    <div className="flex justify-between items-center mb-3 text-xs text-slate-400 px-1">
+                    <div className={`flex justify-between items-center mb-3 text-xs px-1 ${isDarkVariant ? 'text-slate-400' : 'text-slate-400'}`}>
                         <span>搜索历史</span>
                         {searchHistory.length > 0 && (
                             <button 
                                 onClick={clearHistory}
-                                className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                                className={`transition-colors ${isDarkVariant ? 'hover:text-slate-200' : 'hover:text-slate-600 dark:hover:text-slate-300'}`}
                             >
                                 清空
                             </button>
@@ -198,13 +203,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                             {searchHistory.map((item) => (
                                 <div 
                                     key={item}
-                                    className="flex items-center justify-between bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg px-3 py-2 cursor-pointer group/item transition-colors"
+                                    className={`flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer group/item transition-colors ${isDarkVariant ? 'hover:bg-white/5' : 'bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
                                     onClick={() => handleSearchHistoryClick(item)}
                                 >
-                                    <span className="text-sm text-slate-600 dark:text-slate-300">{item}</span>
+                                    <span className={`text-sm ${isDarkVariant ? 'text-slate-300' : 'text-slate-600 dark:text-slate-300'}`}>{item}</span>
                                     <button 
                                         onClick={(e) => removeHistoryItem(e, item)}
-                                        className="text-slate-300 hover:text-slate-500 dark:hover:text-slate-200 p-1 opacity-0 group-hover/item:opacity-100 transition-opacity"
+                                        className={`p-1 opacity-0 group-hover/item:opacity-100 transition-opacity ${isDarkVariant ? 'text-slate-400 hover:text-slate-200' : 'text-slate-300 hover:text-slate-500 dark:hover:text-slate-200'}`}
                                     >
                                         <X size={14} />
                                     </button>
@@ -212,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-4 text-xs text-slate-300 dark:text-slate-600">
+                        <div className={`text-center py-4 text-xs ${isDarkVariant ? 'text-slate-500' : 'text-slate-300 dark:text-slate-600'}`}>
                             暂无搜索历史
                         </div>
                     )}
@@ -226,7 +231,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
             {/* Theme Toggle */}
             <button 
                 onClick={toggleTheme}
-                className="p-2 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className={`p-2 rounded-full transition-colors ${isDarkVariant ? 'text-slate-400 hover:text-white hover:bg-white/10' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                 title={theme === 'dark' ? '切换亮色模式' : '切换暗夜模式'}
             >
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -236,28 +241,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                 <div className="relative">
                     <button 
                         onClick={() => setShowUserMenu(!showUserMenu)}
-                        className="flex items-center gap-2 pl-1 pr-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:shadow-md transition-shadow"
+                        className={`flex items-center gap-2 pl-1 pr-3 py-1 border rounded-full hover:shadow-md transition-shadow ${isDarkVariant ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'}`}
                     >
-                        <div className="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/30 overflow-hidden border border-brand-200 dark:border-brand-900">
+                        <div className={`w-8 h-8 rounded-full overflow-hidden border ${isDarkVariant ? 'bg-brand-900/50 border-brand-500/50' : 'bg-brand-100 dark:bg-brand-900/30 border-brand-200 dark:border-brand-900'}`}>
                              <img src={user?.avatar} alt="User" />
                         </div>
-                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200 max-w-[80px] truncate">{user?.username}</span>
+                        <span className="text-sm font-bold max-w-[80px] truncate">{user?.username}</span>
                     </button>
 
                     {showUserMenu && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 py-2 animate-scale-in origin-top-right">
-                             <div className="px-4 py-2 border-b border-slate-50 dark:border-slate-700 mb-1">
+                        <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-xl border py-2 animate-scale-in origin-top-right ${isDarkVariant ? 'bg-[#1e293b] border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.5)]' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'}`}>
+                             <div className={`px-4 py-2 border-b mb-1 ${isDarkVariant ? 'border-white/10' : 'border-slate-50 dark:border-slate-700'}`}>
                                  <p className="text-xs text-slate-400">已登录账号</p>
-                                 <p className="font-bold text-slate-800 dark:text-slate-100 truncate">{user?.username}</p>
+                                 <p className={`font-bold truncate ${isDarkVariant ? 'text-white' : 'text-slate-800 dark:text-slate-100'}`}>{user?.username}</p>
                              </div>
-                             <button onClick={() => { onNavigate('learning-center'); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-brand-50 dark:hover:bg-slate-700 hover:text-brand-600 font-medium">
+                             <button onClick={() => { onNavigate('learning-center'); setShowUserMenu(false); }} className={`w-full text-left px-4 py-2 text-sm font-medium ${isDarkVariant ? 'text-slate-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-brand-50 dark:hover:bg-slate-700 hover:text-brand-600'}`}>
                                  我的学习
                              </button>
-                             <button className="w-full text-left px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-brand-50 dark:hover:bg-slate-700 hover:text-brand-600 font-medium">
+                             <button className={`w-full text-left px-4 py-2 text-sm font-medium ${isDarkVariant ? 'text-slate-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-brand-50 dark:hover:bg-slate-700 hover:text-brand-600'}`}>
                                  账号设置
                              </button>
-                             <div className="border-t border-slate-50 dark:border-slate-700 mt-1 pt-1">
-                                <button onClick={() => { logout(); setShowUserMenu(false); onNavigate('home'); }} className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 font-medium flex items-center gap-2">
+                             <div className={`border-t mt-1 pt-1 ${isDarkVariant ? 'border-white/10' : 'border-slate-50 dark:border-slate-700'}`}>
+                                <button onClick={() => { logout(); setShowUserMenu(false); onNavigate('home'); }} className={`w-full text-left px-4 py-2 text-sm font-medium flex items-center gap-2 ${isDarkVariant ? 'text-rose-400 hover:bg-rose-500/10' : 'text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10'}`}>
                                     <LogOut size={14} /> 退出登录
                                 </button>
                              </div>
@@ -268,13 +273,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onSearc
                 <>
                     <button 
                     onClick={onLoginClick}
-                    className="text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 font-bold text-sm"
+                    className={`font-bold text-sm transition-colors ${isDarkVariant ? 'text-slate-300 hover:text-white' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400'}`}
                     >
                     登录
                     </button>
                     <button 
                     onClick={onLoginClick}
-                    className="bg-slate-900 dark:bg-brand-600 hover:bg-brand-600 dark:hover:bg-brand-500 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                    className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2 ${isDarkVariant ? 'bg-brand-500 text-white hover:bg-brand-400 shadow-brand-500/20' : 'bg-slate-900 dark:bg-brand-600 hover:bg-brand-600 dark:hover:bg-brand-500 text-white'}`}
                     >
                     免费注册 <Sparkles className="w-3 h-3 text-accent-400" />
                     </button>
