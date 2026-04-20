@@ -140,17 +140,19 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
       </header>
 
       {/* 2. Main Workspace - App Layout (Flex Grow) */}
-      {/* Scrollable on mobile, fixed on desktop */}
-      <div className="flex-1 flex flex-col lg:flex-row w-full overflow-y-auto lg:overflow-hidden p-0 lg:p-4 gap-0 lg:gap-4">
+      <div className="flex-1 flex flex-col lg:flex-row w-full overflow-hidden p-0 lg:p-4 gap-0 lg:gap-4">
           
-          {/* LEFT: Cinema Player Stage - Auto Resizing */}
-          <div 
-            className="w-full aspect-video lg:aspect-auto lg:flex-1 bg-black lg:rounded-2xl overflow-hidden flex flex-col relative group shadow-2xl lg:shadow-[0_0_40px_-15px_rgba(16,185,129,0.15)] border-b lg:border border-white/10 ring-0 lg:ring-1 ring-black transition-all duration-500 shrink-0"
-            onMouseEnter={() => setShowControls(true)}
-            onMouseLeave={() => isPlaying && setShowControls(false)}
-          >
-              {/* Video Area - Centered & Contained */}
-              <div className="flex-1 relative flex items-center justify-center bg-black w-full h-full">
+          {/* LEFT: Content Column (Scrollable) */}
+          <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar lg:rounded-2xl lg:bg-white lg:dark:bg-slate-900 lg:shadow-xl lg:border border-slate-200 dark:border-slate-800">
+              
+              {/* Video Player - Strict 16:9 */}
+              <div 
+                className="w-full aspect-video bg-black overflow-hidden flex flex-col relative group shrink-0 ring-0 lg:ring-1 ring-black/5"
+                onMouseEnter={() => setShowControls(true)}
+                onMouseLeave={() => isPlaying && setShowControls(false)}
+              >
+                  {/* Video Area - Centered & Contained */}
+                  <div className="flex-1 relative flex items-center justify-center bg-black w-full h-full">
                   <img 
                     src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" 
                     className="w-full h-full object-contain opacity-90 max-h-full"
@@ -171,53 +173,83 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
                   <div className={`absolute top-0 left-0 right-0 h-24 lg:h-32 bg-gradient-to-b from-black/80 to-transparent p-4 lg:p-6 transition-opacity duration-300 pointer-events-none ${showControls ? 'opacity-100' : 'opacity-0'}`}>
                       <h2 className="text-white font-bold text-base lg:text-lg drop-shadow-md line-clamp-1">{currentLessonTitle}</h2>
                   </div>
-              </div>
+                  </div>
 
-              {/* Floating Control Bar - Always at bottom of player area */}
-              <div className={`absolute bottom-2 lg:bottom-6 left-1/2 -translate-x-1/2 w-[95%] lg:w-[90%] max-w-3xl transition-all duration-500 transform ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
-                  <div className="bg-[#1e293b]/70 backdrop-blur-2xl border border-white/10 border-t-white/20 rounded-xl lg:rounded-2xl px-3 lg:px-6 py-2 lg:py-4 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
-                      {/* Progress Bar */}
-                      <div className="flex items-center gap-3 mb-2 lg:mb-3 px-1 group/slider cursor-pointer relative py-1 lg:py-2">
-                          <div className="flex-1 h-1 lg:h-1.5 bg-white/20 rounded-full overflow-hidden">
-                              <div className="h-full w-[30%] bg-brand-500 relative">
-                                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4 bg-white rounded-full shadow-lg transform scale-0 group-hover/slider:scale-100 transition-transform"></div>
-                              </div>
-                          </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 lg:gap-6">
-                              <button onClick={() => setIsPlaying(!isPlaying)} className="text-white hover:text-brand-400 transition-colors">
-                                  {isPlaying ? <Pause className="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" /> : <Play className="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" />}
-                              </button>
-                              
-                              <div className="hidden sm:flex items-center gap-3 group/vol">
-                                  <Volume2 size={20} className="text-slate-300 group-hover/vol:text-white" />
-                                  <div className="w-0 overflow-hidden group-hover/vol:w-24 transition-all duration-300">
-                                      <div className="h-1.5 w-20 bg-white/30 rounded-full ml-2">
-                                          <div className="w-[70%] h-full bg-white rounded-full"></div>
-                                      </div>
+                  {/* Floating Control Bar - Always at bottom of player area */}
+                  <div className={`absolute bottom-2 lg:bottom-6 left-1/2 -translate-x-1/2 w-[95%] lg:w-[90%] max-w-3xl transition-all duration-500 transform ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
+                      <div className="bg-[#1e293b]/70 backdrop-blur-2xl border border-white/10 border-t-white/20 rounded-xl lg:rounded-2xl px-3 lg:px-6 py-2 lg:py-4 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
+                          {/* Progress Bar */}
+                          <div className="flex items-center gap-3 mb-2 lg:mb-3 px-1 group/slider cursor-pointer relative py-1 lg:py-2">
+                              <div className="flex-1 h-1 lg:h-1.5 bg-white/20 rounded-full overflow-hidden">
+                                  <div className="h-full w-[30%] bg-brand-500 relative">
+                                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 lg:w-4 lg:h-4 bg-white rounded-full shadow-lg transform scale-0 group-hover/slider:scale-100 transition-transform"></div>
                                   </div>
                               </div>
-
-                              <span className="text-[10px] lg:text-xs font-mono font-medium text-slate-300 select-none tabular-nums tracking-wide">
-                                  15:30 <span className="text-slate-600 mx-1">/</span> 45:00
-                              </span>
                           </div>
 
-                          <div className="flex items-center gap-2 lg:gap-4">
-                              <button className="text-[10px] lg:text-xs font-bold text-slate-300 hover:text-white px-1.5 lg:px-2 py-1 rounded hover:bg-white/10 transition-colors">
-                                  倍速
-                              </button>
-                              <button className="text-[10px] lg:text-xs font-bold text-slate-300 hover:text-white px-1.5 lg:px-2 py-1 rounded hover:bg-white/10 transition-colors">
-                                  高清
-                              </button>
-                              <div className="w-px h-3 lg:h-4 bg-white/10 mx-0.5 lg:mx-1"></div>
-                              <button className="text-slate-300 hover:text-white transition-colors" title="全屏">
-                                  <Maximize className="w-4 h-4 lg:w-5 lg:h-5" />
-                              </button>
+                          <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 lg:gap-6">
+                                  <button onClick={() => setIsPlaying(!isPlaying)} className="text-white hover:text-brand-400 transition-colors">
+                                      {isPlaying ? <Pause className="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" /> : <Play className="w-5 h-5 lg:w-6 lg:h-6" fill="currentColor" />}
+                                  </button>
+                                  
+                                  <div className="hidden sm:flex items-center gap-3 group/vol">
+                                      <Volume2 size={20} className="text-slate-300 group-hover/vol:text-white" />
+                                      <div className="w-0 overflow-hidden group-hover/vol:w-24 transition-all duration-300">
+                                          <div className="h-1.5 w-20 bg-white/30 rounded-full ml-2">
+                                              <div className="w-[70%] h-full bg-white rounded-full"></div>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  <span className="text-[10px] lg:text-xs font-mono font-medium text-slate-300 select-none tabular-nums tracking-wide">
+                                      15:30 <span className="text-slate-600 mx-1">/</span> 45:00
+                                  </span>
+                              </div>
+
+                              <div className="flex items-center gap-2 lg:gap-4">
+                                  <button className="text-[10px] lg:text-xs font-bold text-slate-300 hover:text-white px-1.5 lg:px-2 py-1 rounded hover:bg-white/10 transition-colors">
+                                      倍速
+                                  </button>
+                                  <button className="text-[10px] lg:text-xs font-bold text-slate-300 hover:text-white px-1.5 lg:px-2 py-1 rounded hover:bg-white/10 transition-colors">
+                                      高清
+                                  </button>
+                                  <div className="w-px h-3 lg:h-4 bg-white/10 mx-0.5 lg:mx-1"></div>
+                                  <button className="text-slate-300 hover:text-white transition-colors" title="全屏">
+                                      <Maximize className="w-4 h-4 lg:w-5 lg:h-5" />
+                                  </button>
+                              </div>
                           </div>
                       </div>
+                  </div>
+              </div>
+
+              {/* Course Info Section (Below Video) */}
+              <div className="p-4 lg:p-8 flex-1 bg-white dark:bg-slate-900">
+                  <h2 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-4">{currentLessonTitle}</h2>
+                  
+                  <div className="flex items-center gap-4 mb-6">
+                      <div className="flex items-center gap-2">
+                          <img src={PAGE_DATA.institution.logo} alt="Institution" className="w-8 h-8 rounded-full object-cover" />
+                          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{PAGE_DATA.institution.name}</span>
+                      </div>
+                      <div className="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                      <div className="flex items-center gap-1 text-sm text-slate-500">
+                          <Store size={16} />
+                          <span>官方认证</span>
+                      </div>
+                  </div>
+
+                  <div className="prose prose-slate dark:prose-invert max-w-none">
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                          本节课程将深入探讨宇宙大爆炸理论的核心概念，结合最新的天文观测数据，为您揭示宇宙起源的奥秘。课程内容涵盖了从奇点到暴胀，再到物质形成的完整过程。
+                      </p>
+                      <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mt-6 mb-3">课程目标</h3>
+                      <ul className="list-disc pl-5 text-slate-600 dark:text-slate-400 space-y-2">
+                          <li>理解宇宙大爆炸的基本时间线</li>
+                          <li>掌握宇宙微波背景辐射的意义</li>
+                          <li>了解暗物质与暗能量在宇宙演化中的作用</li>
+                      </ul>
                   </div>
               </div>
           </div>
@@ -225,8 +257,8 @@ export const CourseDetail: React.FC<CourseDetailProps> = ({ courseId, onBack }) 
           {/* RIGHT: Sidebar - Fixed Width, Independent Scroll */}
           <div 
             className={`
-                flex flex-col flex-1 lg:flex-none lg:h-full transition-all duration-300 ease-in-out w-full
-                ${isSidebarCollapsed ? 'lg:w-0 lg:opacity-0 lg:p-0 lg:border-0 lg:pointer-events-none' : 'lg:w-[400px] lg:min-w-[320px] opacity-100'}
+                flex flex-col lg:h-full transition-all duration-300 ease-in-out shrink-0
+                ${isSidebarCollapsed ? 'lg:w-0 lg:opacity-0 lg:p-0 lg:border-0 lg:pointer-events-none hidden lg:flex' : 'w-full lg:w-[400px] lg:min-w-[320px] opacity-100'}
             `}
           >
               
