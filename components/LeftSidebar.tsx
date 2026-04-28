@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, Search, Download, Building2, BookText, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Home, BookOpen, Search, Download, Building2, BookText, ChevronRight, PanelLeftClose, PanelLeftOpen, Headphones } from 'lucide-react';
 
 interface LeftSidebarProps {
   currentView: string;
@@ -15,7 +15,8 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, onNavigat
     { id: 'search-results', label: '搜索结果', icon: Search },
     { id: 'download', label: '下载中心', icon: Download },
     { id: 'institution-settlement', label: '机构入驻', icon: Building2 },
-    { id: 'course-detail', label: '课程详情', icon: BookText },
+    { id: 'course-detail', label: '视频课程详情', icon: BookText },
+    { id: 'audio-course-detail', label: '音频课程详情', icon: Headphones },
   ];
 
   return (

@@ -11,6 +11,7 @@ import { LearningCenter } from './components/LearningCenter';
 import { SearchResults } from './components/SearchResults';
 import { DownloadCenter } from './components/DownloadCenter';
 import { CourseDetail } from './components/CourseDetail';
+import { AudioCourseDetail } from './components/AudioCourseDetail';
 import { InstitutionSettlement } from './components/InstitutionSettlement';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -20,7 +21,7 @@ import { CategoryDrawer } from './components/CategoryDrawer';
 import { LeftSidebar } from './components/LeftSidebar';
 import { INITIAL_MY_CATEGORIES } from './constants';
 
-type View = 'home' | 'learning-center' | 'search-results' | 'download' | 'course-detail' | 'institution-settlement';
+type View = 'home' | 'learning-center' | 'search-results' | 'download' | 'course-detail' | 'audio-course-detail' | 'institution-settlement';
 
 const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -64,9 +65,15 @@ const AppContent: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  if (currentView === 'course-detail') {
+  if (currentView === 'course-detail' || currentView === 'audio-course-detail') {
       return (
-          <div className="flex flex-col h-[100dvh] overflow-hidden bg-[#0f172a]">
+          <div className={`flex flex-col h-[100dvh] overflow-hidden bg-[#0f172a] transition-all duration-300 ${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'}`}>
+              <LeftSidebar 
+                currentView={currentView} 
+                onNavigate={(v) => handleNavigate(v as View)} 
+                isCollapsed={isSidebarCollapsed}
+                onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              />
               <Navbar 
                 onNavigate={(v) => handleNavigate(v as View)} 
                 currentView={currentView} 
@@ -75,10 +82,17 @@ const AppContent: React.FC = () => {
                 isDarkVariant={true}
               />
               <div className="flex-1 overflow-hidden relative">
-                  <CourseDetail 
-                    courseId={selectedCourseId} 
-                    onBack={() => handleNavigate('home')} 
-                  />
+                  {currentView === 'audio-course-detail' ? (
+                      <AudioCourseDetail 
+                        courseId={selectedCourseId} 
+                        onBack={() => handleNavigate('home')} 
+                      />
+                  ) : (
+                      <CourseDetail 
+                        courseId={selectedCourseId} 
+                        onBack={() => handleNavigate('home')} 
+                      />
+                  )}
               </div>
           </div>
       );
